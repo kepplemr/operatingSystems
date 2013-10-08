@@ -1,0 +1,20 @@
+#
+# Test file for ring program
+#
+$ time ring -s 3
+RING!!!
+real    0m3.002s
+user    0m0.000s
+sys     0m0.000s
+
+$ time ring -a 4
+RING!!!
+real    0m4.002s
+user    0m0.000s
+sys     0m0.000s
+
+$ time ring -m 1234
+RING!!!
+real    0m1.237s
+user    0m0.000s
+sys     0m0.000s

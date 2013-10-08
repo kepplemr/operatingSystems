@@ -1,0 +1,149 @@
+/*
+ * cclock.c
+ *
+ * Author: Michael Kepple
+ * Date:   28 Mar 2013
+ * Description: Digital clock implentation through curses.
+*/
+#include "cclock.h"
+
+int main()
+{
+    initscr();
+    curs_set(CURSOR_OFF);
+    time_t curTime;
+    struct tm *localTime;
+    int hourPos, minPos, secPos, cenY, cenX;
+    for (;;)
+    {
+        time(&curTime);
+        localTime = localtime(&curTime);
+        hourPos = localTime->tm_hour;
+        minPos = localTime->tm_min;
+        secPos = localTime->tm_sec;
+        cenX = MAX(0,((COLS-CLOCK_WIDTH)/2));
+        cenY = LINES/2-HALF_HEIGHT;
+        printTime(hourPos, cenX, cenY);
+        cenX+=TIME_WIDTH;
+        printColon(cenX, cenY);
+        cenX+=COL_WIDTH;
+        printTime(minPos, cenX, cenY);
+        cenX+=TIME_WIDTH;
+        printColon(cenX, cenY);
+        cenX+=COL_WIDTH;
+        printTime(secPos, cenX, cenY);
+        refresh();
+        sleep(1);
+    }
+    refresh();
+    getch();
+    endwin();
+}
+
+/*
+ * Function: printTime
+ * Description: prints out two digits at specified location representing time.
+ * Params: time, beginning x-coordinates and y-coordinates.
+ * Returns: Nothing.
+ * Modifies: stdscr
+*/
+void printTime(int time, int x, int y)
+{
+    int firstDig = (int)(time/BASE);
+    int secDig = time % BASE;
+    int i;
+    for (i = 0; i<HEIGHT;i++)
+        mvwprintw(stdscr, (y+i), x, "%s",clockChars[firstDig][i]);
+    for (i = 0; i<HEIGHT;i++)
+        mvwprintw(stdscr, (y+i), (x+COL_WIDTH), "%s",clockChars[secDig][i]);
+}
+
+/* 
+ * Function: printColon
+ * Description: displays a large colon character to the screen at specified
+ *   location.
+ * Params: x-coordinate and y-coordinate to begin displaying colon.
+ * Returns: Nothing.
+ * Modifies: stdscr
+*/
+void printColon(int x, int y)
+{
+    int i;
+    for (i = 0; i<HEIGHT;i++)
+        mvwprintw(stdscr, (y+i), x, "%s", clockChars[COL_INDEX][i]);
+}
+/*
+ * File: cclock.h
+ * Author: Michael Kepple
+ * Date:   28 Mar 2013
+ *
+*/
+#ifndef CCLOCK_H
+#define CCLOCK_H
+#include <curses.h>
+#include <time.h>
+#define MAX(a,b) (((a)>(b))?(a):(b))
+#define CURSOR_OFF 0
+#define CLOCK_WIDTH 160
+#define HALF_HEIGHT 5
+#define TIME_WIDTH 40
+#define COL_WIDTH 20
+#define BASE 10
+#define HEIGHT 11
+#define COL_INDEX 10
+char *zero[] = {" .----------------. ","| .--------------. |",
+"| |     ____     | |","| |   .'    '.   | |","| |  |  .--.  |  | |",
+"| |  | |    | |  | |","| |  |  `--'  |  | |","| |   '.____.'   | |",
+"| |              | |","| '--------------' |"," '----------------' "};
+char *one[] =  {" .----------------. ","| .--------------. |",
+"| |     __       | |","| |    /  |      | |","| |    `| |      | |",
+"| |     | |      | |","| |    _| |_     | |","| |   |_____|    | |",
+"| |              | |","| '--------------' |"," '----------------' "};
+char* two[] =  {" .----------------. ","| .--------------. |",
+"| |    _____     | |","| |   / ___ `.   | |","| |  |_/___) |   | |",
+"| |   .'____.'   | |","| |  / /____     | |","| |  |_______|   | |",
+"| |              | |","| '--------------' |"," '----------------' "};
+char* three[]= {" .----------------. ","| .--------------. |",
+"| |    ______    | |","| |   / ____ `.  | |","| |   `'  __) |  | |",
+"| |   _  |__ '.  | |","| |  | \\____) |  | |","| |   \\______.'  | |",
+"| |              | |","| '--------------' |"," '----------------' "};
+char* four[] = {" .----------------. ","| .--------------. |",
+"| |   _    _     | |","| |  | |  | |    | |","| |  | |__| |_   | |",
+"| |  |____   _|  | |","| |      _| |_   | |","| |     |_____|  | |",
+"| |              | |","| '--------------' |"," '----------------' "};
+char* five[] = {" .----------------. ","| .--------------. |",
+"| |   _______    | |","| |  |  _____|   | |","| |  | |____     | |",
+"| |  '_.____''.  | |","| |  | \\____) |  | |","| |   \\______.'  | |",
+"| |              | |","| '--------------' |"," '----------------' "};
+char* six[] =  {" .----------------. ","| .--------------. |",
+"| |    ______    | |","| |  .' ____ \\   | |","| |  | |____\\_|  | |",
+"| |  | '____`'.  | |","| |  | (____) |  | |","| |  '.______.'  | |",
+"| |              | |","| '--------------' |"," '----------------' "};
+char* seven[]= {" .----------------. ","| .--------------. |",
+"| |   _______    | |","| |  |  ___  |   | |","| |  |_/  / /    | |",
+"| |      / /     | |","| |     / /      | |","| |    /_/       | |",
+"| |              | |","| '--------------' |"," '----------------' "};
+char* eight[]= {" .----------------. ","| .--------------. |",
+"| |     ____     | |","| |   .' __ '.   | |","| |   | (__) |   | |",
+"| |   .`____'.   | |","| |  | (____) |  | |","| |  `.______.'  | |",
+"| |              | |","| '--------------' |"," '----------------' "};
+char* nine[] = {" .----------------. ","| .--------------. |",
+"| |    ______    | |","| |  .' ____ '.  | |","| |  | (____) |  | |",
+"| |  '_.____. |  | |","| |  | \\____| |  | |","| |   \\______,'  | |",
+"| |              | |","| '--------------' |"," '----------------' "};
+char* colon[] ={" .----------------. ","| .--------------. |",
+"| |              | |","| |      _       | |","| |     (_)      | |",
+"| |      _       | |","| |     (_)      | |","| |              | |",
+"| |              | |","| '--------------' |"," '----------------' "};
+char ** clockChars[] = {zero, one, two, three, four, five, six, seven, eight,
+    nine, colon};
+void printTime(int time, int x, int y);
+void printColon(int x, int y);
+#endif
+#
+# Makefile for cclock
+# Author: Michael Kepple
+# Date:   28 Mar 2013
+#
+cclock: cclock.h cclock.c
+	gcc cclock.c cclock.h -lncurses -o cclock

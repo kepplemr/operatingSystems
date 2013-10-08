@@ -1,0 +1,63 @@
+Michael Kepple
+21 Mar 2013
+CS 5520
+Lab 06 Deliverable
+
+#1 - Increase the primary boot loader's timeout to 7 seconds.
+What I did: changed timeout in /boot.cfg to 7.
+
+Diff output:
+2c2
+< timeout=5
+---
+> timeout=7
+
+#2 - Change the secondary boot loader's prompt from ">" to ">>"
+What I did: edited /usr/src/sys/arch/i386/stand/lib/menuutils.c then cd'd to
+/usr/src/sys/arch/i386/stand/boot/ and did a 'make' and a 'make install'. Then
+I cd'd to /usr/src/commands/updateboot/ and ran 'updateboot.sh'
+
+Diff output:
+73c73
+<           printf("> ");
+---
+>           printf(">> ");
+
+#3 - Change to uppercase the portions of the initial greeting related to
+RELEASE and VERSION. Also change "Minix" to "MINIX L06"
+What I did: changed /usr/src/servers/pm/misc.c to new system name "MINIX LAB 06"
+Did a make and a 'make install' in that directory and then a 'make hdbuild' from 
+/usr/src/releasetools.
+
+Diff output:
+34c34
+<   "Minix",        /* system name */
+---
+>   "MINIX L06",       /* system name */
+
+What I did for the RELASE/VERSION stuff: edited /usr/src/commands/getty.c to
+uppercased version of original static char* def_banner. Then did a make and 
+'make install' in /usr/src/commands/getty/.
+
+Diff output:
+91c91
+<   static char *def_banner[] = { "%s Release %r Version %v (%t)\n\n%n login:", 0 };
+---
+<   static char *def_banner[] = { "%s RELEASE %r VERSION %v (%t)\n\n%n login:", 0 };
+
+#4 - Add at least one virtual console.
+What I did: Edited /usr/src/include/minix/config.h to increase maximum amount
+of virtual consoles.
+Diff output:
+52c52
+< #define NR_CONS          4  /* # system consoles (1 to 8) */
+---
+> #define NR_CONS          5  /* # system consoles (1 to 8) */
+
+What I did: Edited /usr/src/etc/ttys to include a new ttyc (ttyc4).
+Diff output:
+9a10
+> ttyc4         getty         minix     on secure
+
+What I did: cd to /dev/ and ran 'MAKEDEV ttyc4' and then ran 'make hdboot' from
+/usr/src/releasetools

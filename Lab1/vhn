@@ -1,0 +1,41 @@
+#!/bin/bash
+#
+# Author: Michael Kepple
+# Date: 24 Jan 2013
+#
+# This script vertically displays the characters in the name of the current host.
+#
+name=$HOSTNAME
+for ((i=0; i<${#name};i++))
+do
+    echo "${name:$i:1}"
+done
+
+:'
+===============================================================================
+Test
+===============================================================================
+(student)~/5520/Lab1% vhn
+s
+t
+u
+d
+e
+n
+t
+.
+c
+s
+.
+a
+p
+p
+s
+t
+a
+t
+e
+.
+e
+d
+u

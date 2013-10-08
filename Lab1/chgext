@@ -1,0 +1,33 @@
+#!/bin/bash
+#
+# Author: Michael Kepple
+# Date: 24 Jan 2013
+#
+# This script changes the file extension of all files whose extension is 
+# specified by the first command line parameter. The file extension of these
+# files is changed to the second command line parameter.
+#
+if test -z "$1" || test -z "$2"
+then
+    echo Error: Two arguments needed.
+    echo Usage: chgext \<Ext to change\> \<Ext to change to\>
+    exit
+else
+    for rename in *.$1; do
+        mv $rename ${rename%.$1}.$2
+    done
+fi
+
+
+#==============================================================================
+#Test
+#==============================================================================
+#(student)~/5520/Lab1-1% ls
+#chgext  h2  hcindents  hcindents.pdf  hcindents.ps  lab01test.c  test2  test.C
+#(student)~/5520/Lab1-1% chgext C cpp
+#(student)~/5520/Lab1-1% ls
+#chgext  h2  hcindents  hcindents.pdf  hcindents.ps  lab01test.c  test2  test.cpp
+#(student)~/5520/Lab1-1% chgext cpp C
+#(student)~/5520/Lab1-1% ls
+#chgext  h2  hcindents  hcindents.pdf  hcindents.ps  lab01test.c  test2  test.C
+

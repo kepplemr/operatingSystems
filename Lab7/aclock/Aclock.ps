@@ -1,0 +1,1533 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 38 24 574 768
+%%Title: Enscript Output
+%%For: Kepple  Michael R.
+%%Creator: GNU enscript 1.6.4
+%%CreationDate: Thu Mar 28 12:50:52 2013
+%%Orientation: Portrait
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 4
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 4
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 10 10 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6 4
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      fname length fmodstr length add pagenumstr length add 95 6 idiv add d_header_w 6 idiv le{
+        5 0 moveto fname show
+        45 0 rmoveto fmodstr show
+        45 0 rmoveto pagenumstr show
+      } {
+        5 0 moveto fmodstr show
+        45 0 rmoveto pagenumstr show
+        fname length d_header_w 6 idiv idiv 1 add 10 mul 5 exch moveto
+        1 1 fname length d_header_w 6 idiv idiv
+        {
+          dup fname exch 1 sub d_header_w 6 idiv mul d_header_w 6 idiv getinterval show
+          5 exch 10 mul fname length d_header_w 6 idiv idiv 1 add 10 mul exch sub moveto
+        } for
+        5 10 moveto
+        fname fname length d_header_w 6 idiv idiv d_header_w 6 idiv mul dup fname length exch sub getinterval show
+      }ifelse
+    }ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 536 def
+/d_page_h 744 def
+/d_header_x 0 def
+/d_header_y 700 def
+/d_header_w 536 def
+/d_header_h 44 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 536 def
+/d_footer_h 0 def
+/d_output_w 536 def
+/d_output_h 700 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 1 def
+/fname (Aclock) def
+/fdir () def
+/ftail (Aclock) def
+% User defined strings:
+/fmodstr (Thu Mar 28 12:50:34 2013) def
+/pagenumstr (1) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+/Courier-Oblique 10 10 SUF
+29 687 M
+(/*) s
+29 676 M
+( *) s
+29 665 M
+( * aclock.c) s
+29 654 M
+( *) s
+29 643 M
+( * Author: Michael Kepple) s
+29 632 M
+( * Date:   28 Mar 2013) s
+29 621 M
+( * Description: Ncurses-based analog clock) s
+29 610 M
+( *) s
+29 599 M
+(*/) s
+/F-gs-font 10 10 SF
+29 588 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 588 M
+(include) s
+/F-gs-font 10 10 SF
+77 588 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 588 M
+("aclock.h") s
+/F-gs-font 10 10 SF
+/Courier-Bold 10 10 SUF
+29 566 M
+(int) s
+/F-gs-font 10 10 SF
+47 566 M
+( ) s
+/Courier-Bold 10 10 SUF
+53 566 M
+(main) s
+/F-gs-font 10 10 SF
+77 566 M
+(\(\)) s
+29 555 M
+({) s
+29 544 M
+(    initscr\(\);) s
+29 533 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 533 M
+(int) s
+/F-gs-font 10 10 SF
+71 533 M
+( cenX = COLS/2;) s
+29 522 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 522 M
+(int) s
+/F-gs-font 10 10 SF
+71 522 M
+( cenY = LINES/2;) s
+29 511 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 511 M
+(int) s
+/F-gs-font 10 10 SF
+71 511 M
+( maxRadius = MIN\(LINES/2, COLS/2\)-2;) s
+29 500 M
+(    curs_set\(CURSOR_OFF\);) s
+29 489 M
+(    time_t curTime;) s
+29 478 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 478 M
+(struct) s
+/F-gs-font 10 10 SF
+89 478 M
+( tm *localTime;) s
+29 467 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 467 M
+(int) s
+/F-gs-font 10 10 SF
+71 467 M
+( hourPos, minPos, secPos;) s
+29 456 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 456 M
+(for) s
+/F-gs-font 10 10 SF
+71 456 M
+( \(;;\)) s
+29 445 M
+(    {) s
+29 434 M
+(        time\(&curTime\);) s
+29 423 M
+(        localTime = localtime\(&curTime\);) s
+29 412 M
+(        hourPos = \(localTime->tm_hour*HOURVAL\)+\(localTime->tm_min/MINUTEVAL\);) s
+29 401 M
+(        minPos = localTime->tm_min;) s
+29 390 M
+(        secPos = localTime->tm_sec;) s
+29 379 M
+(        clear\(\);) s
+29 368 M
+(        drawClock\(cenX, cenY, maxRadius\);) s
+29 357 M
+(        drawHand\(HOUR, hourPos, cenX, cenY, maxRadius\);) s
+29 346 M
+(        drawHand\(MINUTE, minPos, cenX, cenY, maxRadius\);) s
+29 335 M
+(        drawHand\(SECOND, secPos, cenX, cenY, maxRadius\);) s
+29 324 M
+(        refresh\(\);) s
+29 313 M
+(        sleep\(1\);) s
+29 302 M
+(    }) s
+29 291 M
+(}) s
+/Courier-Oblique 10 10 SUF
+29 269 M
+(/*) s
+29 258 M
+( * Function: drawClock) s
+29 247 M
+( * Description: draws the initial clock layout.) s
+29 236 M
+( * Params: center x-coordinte, center y-coordinate, maximum radius for screen.) s
+29 225 M
+( * Returns: Nothing.) s
+29 214 M
+( * Modifies: screen.) s
+29 203 M
+(*/) s
+/F-gs-font 10 10 SF
+/Courier-Bold 10 10 SUF
+29 192 M
+(void) s
+/F-gs-font 10 10 SF
+53 192 M
+( ) s
+/Courier-Bold 10 10 SUF
+59 192 M
+(drawClock) s
+/F-gs-font 10 10 SF
+113 192 M
+(\() s
+/Courier-Bold 10 10 SUF
+119 192 M
+(int) s
+/F-gs-font 10 10 SF
+137 192 M
+( cenX, ) s
+/Courier-Bold 10 10 SUF
+179 192 M
+(int) s
+/F-gs-font 10 10 SF
+197 192 M
+( cenY, ) s
+/Courier-Bold 10 10 SUF
+239 192 M
+(int) s
+/F-gs-font 10 10 SF
+257 192 M
+( maxRadius\)) s
+29 181 M
+({) s
+29 170 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 170 M
+(char) s
+/F-gs-font 10 10 SF
+77 170 M
+( * marks[] = {) s
+/Courier-Bold 10 10 SUF
+161 170 M
+("3") s
+/F-gs-font 10 10 SF
+179 170 M
+(, ) s
+/Courier-Bold 10 10 SUF
+191 170 M
+("4") s
+/F-gs-font 10 10 SF
+209 170 M
+(, ) s
+/Courier-Bold 10 10 SUF
+221 170 M
+("5") s
+/F-gs-font 10 10 SF
+239 170 M
+(, ) s
+/Courier-Bold 10 10 SUF
+251 170 M
+("6") s
+/F-gs-font 10 10 SF
+269 170 M
+(, ) s
+/Courier-Bold 10 10 SUF
+281 170 M
+("7") s
+/F-gs-font 10 10 SF
+299 170 M
+(, ) s
+/Courier-Bold 10 10 SUF
+311 170 M
+("8") s
+/F-gs-font 10 10 SF
+329 170 M
+(, ) s
+/Courier-Bold 10 10 SUF
+341 170 M
+("9") s
+/F-gs-font 10 10 SF
+359 170 M
+(, ) s
+/Courier-Bold 10 10 SUF
+371 170 M
+("10") s
+/F-gs-font 10 10 SF
+395 170 M
+(, ) s
+/Courier-Bold 10 10 SUF
+407 170 M
+("11") s
+/F-gs-font 10 10 SF
+431 170 M
+(, ) s
+/Courier-Bold 10 10 SUF
+443 170 M
+("12") s
+/F-gs-font 10 10 SF
+467 170 M
+(, ) s
+/Courier-Bold 10 10 SUF
+479 170 M
+("1") s
+/F-gs-font 10 10 SF
+497 170 M
+(,) s
+29 159 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 159 M
+("2") s
+/F-gs-font 10 10 SF
+71 159 M
+(};) s
+29 148 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 148 M
+(int) s
+/F-gs-font 10 10 SF
+71 148 M
+( i, posX, posY;) s
+29 137 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 137 M
+(for) s
+/F-gs-font 10 10 SF
+71 137 M
+( \(i=0; i<DEGREES; i+=FREQ\)) s
+29 126 M
+(    {) s
+29 115 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 115 M
+(double) s
+/F-gs-font 10 10 SF
+113 115 M
+( angle = DEG2RAD\(i\);) s
+29 104 M
+(        posX = cos\(angle\)*maxRadius*HALFOFFSET+cenX;) s
+29 93 M
+(        posY = sin\(angle\)*maxRadius+cenY;) s
+29 82 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 82 M
+(if) s
+/F-gs-font 10 10 SF
+89 82 M
+( \(i % HOURVAL == 0\)) s
+29 71 M
+(        {) s
+29 60 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 60 M
+(static) s
+/F-gs-font 10 10 SF
+137 60 M
+( ) s
+/Courier-Bold 10 10 SUF
+143 60 M
+(int) s
+/F-gs-font 10 10 SF
+161 60 M
+( place = 0;) s
+29 49 M
+(            mvprintw\(posY, posX, marks[place%HOURS]\);) s
+29 38 M
+(            place++;) s
+29 27 M
+(        }) s
+29 16 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 16 M
+(else) s
+/F-gs-font 10 10 SF
+29 5 M
+(            mvwaddch\(stdscr, posY, posX, ) s
+/Courier-Bold 10 10 SUF
+275 5 M
+('-') s
+/F-gs-font 10 10 SF
+293 5 M
+(\);) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 2 def
+/fname (Aclock) def
+/fdir () def
+/ftail (Aclock) def
+% User defined strings:
+/fmodstr (Thu Mar 28 12:50:34 2013) def
+/pagenumstr (2) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+29 687 M
+(    }) s
+29 676 M
+(}) s
+/Courier-Oblique 10 10 SUF
+29 654 M
+(/*) s
+29 643 M
+( * Function: drawHand) s
+29 632 M
+( * Description: draws an individual clock hand based off arguments.) s
+29 621 M
+( * Params: int representing which hand caller wants to draw, int representing) s
+29 610 M
+( *   the value the hand should point towards, center x-coordinate, center) s
+29 599 M
+( *   y-coordinate, maximum radius for screen.) s
+29 588 M
+( * Returns: Nothing.) s
+29 577 M
+( * Modifies: screen.) s
+29 566 M
+(*/) s
+/F-gs-font 10 10 SF
+/Courier-Bold 10 10 SUF
+29 555 M
+(void) s
+/F-gs-font 10 10 SF
+53 555 M
+( ) s
+/Courier-Bold 10 10 SUF
+59 555 M
+(drawHand) s
+/F-gs-font 10 10 SF
+107 555 M
+(\() s
+/Courier-Bold 10 10 SUF
+113 555 M
+(int) s
+/F-gs-font 10 10 SF
+131 555 M
+( hand, ) s
+/Courier-Bold 10 10 SUF
+173 555 M
+(int) s
+/F-gs-font 10 10 SF
+191 555 M
+( position, ) s
+/Courier-Bold 10 10 SUF
+257 555 M
+(int) s
+/F-gs-font 10 10 SF
+275 555 M
+( cenX, ) s
+/Courier-Bold 10 10 SUF
+317 555 M
+(int) s
+/F-gs-font 10 10 SF
+335 555 M
+( cenY, ) s
+/Courier-Bold 10 10 SUF
+377 555 M
+(int) s
+/F-gs-font 10 10 SF
+395 555 M
+( maxRadius\)) s
+29 544 M
+({) s
+29 533 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 533 M
+(float) s
+/F-gs-font 10 10 SF
+83 533 M
+( radians = DEG2RAD\(position-QUARTEROFFSET\)*FREQ;) s
+29 522 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 522 M
+(int) s
+/F-gs-font 10 10 SF
+71 522 M
+( i, x, y, length;) s
+29 511 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 511 M
+(char) s
+/F-gs-font 10 10 SF
+77 511 M
+( display;) s
+29 500 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 500 M
+(switch) s
+/F-gs-font 10 10 SF
+89 500 M
+( \(hand\)) s
+29 489 M
+(    {) s
+29 478 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 478 M
+(case) s
+/F-gs-font 10 10 SF
+101 478 M
+( ) s
+/Courier-Bold 10 10 SUF
+107 478 M
+(HOUR) s
+/F-gs-font 10 10 SF
+131 478 M
+(:) s
+29 467 M
+(            length = maxRadius*HOUR_LENGTH;) s
+29 456 M
+(            display = ) s
+/Courier-Bold 10 10 SUF
+161 456 M
+('@') s
+/F-gs-font 10 10 SF
+179 456 M
+(;) s
+29 445 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 445 M
+(break) s
+/F-gs-font 10 10 SF
+131 445 M
+(;) s
+29 434 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 434 M
+(case) s
+/F-gs-font 10 10 SF
+101 434 M
+( ) s
+/Courier-Bold 10 10 SUF
+107 434 M
+(MINUTE) s
+/F-gs-font 10 10 SF
+143 434 M
+(:) s
+29 423 M
+(            length = maxRadius*MIN_LENGTH;) s
+29 412 M
+(            display = ) s
+/Courier-Bold 10 10 SUF
+161 412 M
+('$') s
+/F-gs-font 10 10 SF
+179 412 M
+(;) s
+29 401 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 401 M
+(break) s
+/F-gs-font 10 10 SF
+131 401 M
+(;) s
+29 390 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 390 M
+(case) s
+/F-gs-font 10 10 SF
+101 390 M
+( ) s
+/Courier-Bold 10 10 SUF
+107 390 M
+(SECOND) s
+/F-gs-font 10 10 SF
+143 390 M
+(:) s
+29 379 M
+(            length = maxRadius;) s
+29 368 M
+(            display = ) s
+/Courier-Bold 10 10 SUF
+161 368 M
+('*') s
+/F-gs-font 10 10 SF
+179 368 M
+(;) s
+29 357 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 357 M
+(break) s
+/F-gs-font 10 10 SF
+131 357 M
+(;) s
+29 346 M
+(    }) s
+29 335 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 335 M
+(for) s
+/F-gs-font 10 10 SF
+71 335 M
+( \(i=1; i<length; i++\)) s
+29 324 M
+(    {) s
+29 313 M
+(        x = cos\(radians\)*i*HALFOFFSET+cenX;) s
+29 302 M
+(        y = sin\(radians\)*i+cenY;) s
+29 291 M
+(        mvwaddch\(stdscr, y, x, display\);) s
+29 280 M
+(    }) s
+29 269 M
+(}) s
+/Courier-Oblique 10 10 SUF
+29 258 M
+(/*) s
+29 247 M
+( * File:   aclock.h) s
+29 236 M
+( * Author: Michael Kepple) s
+29 225 M
+( * Date:   28 Mar 2013) s
+29 214 M
+( *) s
+29 203 M
+(*/) s
+/F-gs-font 10 10 SF
+29 192 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 192 M
+(ifndef) s
+/F-gs-font 10 10 SF
+71 192 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 192 M
+(ACLOCK_H) s
+/F-gs-font 10 10 SF
+29 181 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 181 M
+(define) s
+/F-gs-font 10 10 SF
+71 181 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 181 M
+(ACLOCK_H) s
+/F-gs-font 10 10 SF
+29 170 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 170 M
+(include) s
+/F-gs-font 10 10 SF
+77 170 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 170 M
+(<unistd.h>) s
+/F-gs-font 10 10 SF
+29 159 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 159 M
+(include) s
+/F-gs-font 10 10 SF
+77 159 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 159 M
+(<curses.h>) s
+/F-gs-font 10 10 SF
+29 148 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 148 M
+(include) s
+/F-gs-font 10 10 SF
+77 148 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 148 M
+(<math.h>) s
+/F-gs-font 10 10 SF
+29 137 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 137 M
+(include) s
+/F-gs-font 10 10 SF
+77 137 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 137 M
+(<time.h>) s
+/F-gs-font 10 10 SF
+29 126 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 126 M
+(include) s
+/F-gs-font 10 10 SF
+77 126 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 126 M
+(<stdlib.h>) s
+/F-gs-font 10 10 SF
+29 115 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 115 M
+(define) s
+/F-gs-font 10 10 SF
+71 115 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 115 M
+(HOUR_LENGTH) s
+/F-gs-font 10 10 SF
+143 115 M
+( .5) s
+29 104 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 104 M
+(define) s
+/F-gs-font 10 10 SF
+71 104 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 104 M
+(MIN_LENGTH) s
+/F-gs-font 10 10 SF
+137 104 M
+( .75) s
+29 93 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 93 M
+(define) s
+/F-gs-font 10 10 SF
+71 93 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 93 M
+(CURSOR_OFF) s
+/F-gs-font 10 10 SF
+137 93 M
+( 0) s
+29 82 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 82 M
+(define) s
+/F-gs-font 10 10 SF
+71 82 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 82 M
+(SECOND) s
+/F-gs-font 10 10 SF
+113 82 M
+( 0) s
+29 71 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 71 M
+(define) s
+/F-gs-font 10 10 SF
+71 71 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 71 M
+(MINUTE) s
+/F-gs-font 10 10 SF
+113 71 M
+( 1) s
+29 60 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 60 M
+(define) s
+/F-gs-font 10 10 SF
+71 60 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 60 M
+(HOUR) s
+/F-gs-font 10 10 SF
+101 60 M
+( 2) s
+29 49 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 49 M
+(define) s
+/F-gs-font 10 10 SF
+71 49 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 49 M
+(HOURS) s
+/F-gs-font 10 10 SF
+107 49 M
+( 12) s
+29 38 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 38 M
+(define) s
+/F-gs-font 10 10 SF
+71 38 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 38 M
+(FREQ) s
+/F-gs-font 10 10 SF
+101 38 M
+( 6) s
+29 27 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 27 M
+(define) s
+/F-gs-font 10 10 SF
+71 27 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 27 M
+(HOURVAL) s
+/F-gs-font 10 10 SF
+119 27 M
+( 5) s
+29 16 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 16 M
+(define) s
+/F-gs-font 10 10 SF
+71 16 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 16 M
+(MINUTEVAL) s
+/F-gs-font 10 10 SF
+131 16 M
+( 10) s
+29 5 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 5 M
+(define) s
+/F-gs-font 10 10 SF
+71 5 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 5 M
+(DEGREES) s
+/F-gs-font 10 10 SF
+119 5 M
+( 360) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 3 def
+/fname (Aclock) def
+/fdir () def
+/ftail (Aclock) def
+% User defined strings:
+/fmodstr (Thu Mar 28 12:50:34 2013) def
+/pagenumstr (3) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+29 687 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 687 M
+(define) s
+/F-gs-font 10 10 SF
+71 687 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 687 M
+(QUARTEROFFSET) s
+/F-gs-font 10 10 SF
+155 687 M
+( 15) s
+29 676 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 676 M
+(define) s
+/F-gs-font 10 10 SF
+71 676 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 676 M
+(HALFOFFSET) s
+/F-gs-font 10 10 SF
+137 676 M
+( 2) s
+29 665 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 665 M
+(define) s
+/F-gs-font 10 10 SF
+71 665 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 665 M
+(PI) s
+/F-gs-font 10 10 SF
+89 665 M
+( 3.14159265358979323846) s
+29 654 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 654 M
+(define) s
+/F-gs-font 10 10 SF
+71 654 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 654 M
+(MIN) s
+/F-gs-font 10 10 SF
+95 654 M
+(\(a,b\) \(\(\(a\)<\(b\)\)?\(a\):\(b\)\)) s
+29 643 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 643 M
+(define) s
+/F-gs-font 10 10 SF
+71 643 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 643 M
+(DEG2RAD) s
+/F-gs-font 10 10 SF
+119 643 M
+(\(Deg\) \(\(Deg\) / 180.0 * PI\)) s
+/Courier-Bold 10 10 SUF
+29 632 M
+(void) s
+/F-gs-font 10 10 SF
+53 632 M
+( ) s
+/Courier-Bold 10 10 SUF
+59 632 M
+(drawClock) s
+/F-gs-font 10 10 SF
+113 632 M
+(\() s
+/Courier-Bold 10 10 SUF
+119 632 M
+(int) s
+/F-gs-font 10 10 SF
+137 632 M
+( cenX, ) s
+/Courier-Bold 10 10 SUF
+179 632 M
+(int) s
+/F-gs-font 10 10 SF
+197 632 M
+( cenY, ) s
+/Courier-Bold 10 10 SUF
+239 632 M
+(int) s
+/F-gs-font 10 10 SF
+257 632 M
+( maxRadius\);) s
+/Courier-Bold 10 10 SUF
+29 621 M
+(void) s
+/F-gs-font 10 10 SF
+53 621 M
+( ) s
+/Courier-Bold 10 10 SUF
+59 621 M
+(drawHand) s
+/F-gs-font 10 10 SF
+107 621 M
+(\() s
+/Courier-Bold 10 10 SUF
+113 621 M
+(int) s
+/F-gs-font 10 10 SF
+131 621 M
+( hand, ) s
+/Courier-Bold 10 10 SUF
+173 621 M
+(int) s
+/F-gs-font 10 10 SF
+191 621 M
+( value, ) s
+/Courier-Bold 10 10 SUF
+239 621 M
+(int) s
+/F-gs-font 10 10 SF
+257 621 M
+( cenX, ) s
+/Courier-Bold 10 10 SUF
+299 621 M
+(int) s
+/F-gs-font 10 10 SF
+317 621 M
+( cenY, ) s
+/Courier-Bold 10 10 SUF
+359 621 M
+(int) s
+/F-gs-font 10 10 SF
+377 621 M
+( maxRadius\);) s
+29 610 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 610 M
+(endif) s
+/F-gs-font 10 10 SF
+29 588 M
+(#) s
+29 577 M
+(# ) s
+/Courier-Bold 10 10 SUF
+41 577 M
+(Makefile) s
+/F-gs-font 10 10 SF
+89 577 M
+( ) s
+/Courier-Bold 10 10 SUF
+95 577 M
+(for) s
+/F-gs-font 10 10 SF
+113 577 M
+( ) s
+/Courier-Bold 10 10 SUF
+119 577 M
+(aclock) s
+/F-gs-font 10 10 SF
+29 566 M
+(# ) s
+/Courier-Bold 10 10 SUF
+41 566 M
+(Author:) s
+/F-gs-font 10 10 SF
+83 566 M
+( ) s
+/Courier-Bold 10 10 SUF
+89 566 M
+(Michael) s
+/F-gs-font 10 10 SF
+131 566 M
+( ) s
+/Courier-Bold 10 10 SUF
+137 566 M
+(Kepple) s
+/F-gs-font 10 10 SF
+29 555 M
+(# ) s
+/Courier-Bold 10 10 SUF
+41 555 M
+(Date:) s
+/F-gs-font 10 10 SF
+71 555 M
+(   28 ) s
+/Courier-Bold 10 10 SUF
+107 555 M
+(Mar) s
+/F-gs-font 10 10 SF
+125 555 M
+( 2013) s
+29 544 M
+(#) s
+/Courier-Bold 10 10 SUF
+29 533 M
+(clock) s
+/F-gs-font 10 10 SF
+59 533 M
+(: aclock.h aclock.c) s
+29 522 M
+(        gcc aclock.h aclock.c -lncurses -lm -o aclock) s
+_R
+S
+%%Trailer
+%%Pages: 3
+%%DocumentNeededResources: font Courier-Oblique Courier-Bold Courier 
+%%EOF

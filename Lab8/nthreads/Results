@@ -1,0 +1,14 @@
+/*
+ * Results of running Nthreads (includes built-in test functionality).
+ *
+*/
+Welcome to NTHREADS!
+Total Threads Created: 4
+Output of 'ps -e -T | grep nthreads:'
+30564 30564 pts/23   00:00:00 nthreads
+30564 30565 pts/23   00:00:00 nthreads
+30564 30566 pts/23   00:00:00 nthreads
+30564 30567 pts/23   00:00:00 nthreads
+30564 30568 pts/23   00:00:00 nthreads
+Output of 'ps -e -T | grep nthreads' after join'ing:
+30564 30564 pts/23   00:00:00 nthreads

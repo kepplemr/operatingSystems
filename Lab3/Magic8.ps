@@ -1,0 +1,2359 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 38 24 574 768
+%%Title: Enscript Output
+%%For: Kepple  Michael R.
+%%Creator: GNU enscript 1.6.4
+%%CreationDate: Wed May  1 12:27:30 2013
+%%Orientation: Portrait
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 4
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 4
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 10 10 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6 4
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      fname length fmodstr length add pagenumstr length add 95 6 idiv add d_header_w 6 idiv le{
+        5 0 moveto fname show
+        45 0 rmoveto fmodstr show
+        45 0 rmoveto pagenumstr show
+      } {
+        5 0 moveto fmodstr show
+        45 0 rmoveto pagenumstr show
+        fname length d_header_w 6 idiv idiv 1 add 10 mul 5 exch moveto
+        1 1 fname length d_header_w 6 idiv idiv
+        {
+          dup fname exch 1 sub d_header_w 6 idiv mul d_header_w 6 idiv getinterval show
+          5 exch 10 mul fname length d_header_w 6 idiv idiv 1 add 10 mul exch sub moveto
+        } for
+        5 10 moveto
+        fname fname length d_header_w 6 idiv idiv d_header_w 6 idiv mul dup fname length exch sub getinterval show
+      }ifelse
+    }ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 536 def
+/d_page_h 744 def
+/d_header_x 0 def
+/d_header_y 700 def
+/d_header_w 536 def
+/d_header_h 44 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 536 def
+/d_footer_h 0 def
+/d_output_w 536 def
+/d_output_h 700 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 1 def
+/fname (Magic8) def
+/fdir () def
+/ftail (Magic8) def
+% User defined strings:
+/fmodstr (Wed May 01 12:26:58 2013) def
+/pagenumstr (1) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+/Courier-Oblique 10 10 SUF
+29 687 M
+(/*) s
+29 676 M
+( *) s
+29 665 M
+( * magic8.c) s
+29 654 M
+( *) s
+29 643 M
+( * Author:      Michael Kepple) s
+29 632 M
+( * Date:        24 Apr 2013) s
+29 621 M
+( * Description: Implementation code for magic8 device driver.) s
+29 610 M
+( *) s
+29 599 M
+(*/) s
+/F-gs-font 10 10 SF
+29 588 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 588 M
+(include) s
+/F-gs-font 10 10 SF
+77 588 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 588 M
+(<minix/drivers.h>) s
+/F-gs-font 10 10 SF
+29 577 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 577 M
+(include) s
+/F-gs-font 10 10 SF
+77 577 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 577 M
+(<minix/chardriver.h>) s
+/F-gs-font 10 10 SF
+29 566 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 566 M
+(include) s
+/F-gs-font 10 10 SF
+77 566 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 566 M
+(<stdio.h>) s
+/F-gs-font 10 10 SF
+29 555 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 555 M
+(include) s
+/F-gs-font 10 10 SF
+77 555 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 555 M
+(<stdlib.h>) s
+/F-gs-font 10 10 SF
+29 544 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 544 M
+(include) s
+/F-gs-font 10 10 SF
+77 544 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 544 M
+(<minix/ds.h>) s
+/F-gs-font 10 10 SF
+29 533 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 533 M
+(include) s
+/F-gs-font 10 10 SF
+77 533 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 533 M
+(<ctype.h>) s
+/F-gs-font 10 10 SF
+29 522 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 522 M
+(include) s
+/F-gs-font 10 10 SF
+77 522 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 522 M
+(<stdlib.h>) s
+/F-gs-font 10 10 SF
+29 511 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 511 M
+(include) s
+/F-gs-font 10 10 SF
+77 511 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 511 M
+(<time.h>) s
+/F-gs-font 10 10 SF
+29 500 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 500 M
+(include) s
+/F-gs-font 10 10 SF
+77 500 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 500 M
+("magic8.h") s
+/F-gs-font 10 10 SF
+/Courier-Bold 10 10 SUF
+29 478 M
+(static) s
+/F-gs-font 10 10 SF
+65 478 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 478 M
+(int) s
+/F-gs-font 10 10 SF
+89 478 M
+( ) s
+/Courier-Bold 10 10 SUF
+95 478 M
+(magic_open) s
+/F-gs-font 10 10 SF
+155 478 M
+(\(message *m\);) s
+/Courier-Bold 10 10 SUF
+29 467 M
+(static) s
+/F-gs-font 10 10 SF
+65 467 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 467 M
+(int) s
+/F-gs-font 10 10 SF
+89 467 M
+( ) s
+/Courier-Bold 10 10 SUF
+95 467 M
+(magic_close) s
+/F-gs-font 10 10 SF
+161 467 M
+(\(message *m\);) s
+/Courier-Bold 10 10 SUF
+29 456 M
+(static) s
+/F-gs-font 10 10 SF
+65 456 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 456 M
+(int) s
+/F-gs-font 10 10 SF
+89 456 M
+( ) s
+/Courier-Bold 10 10 SUF
+95 456 M
+(magic_ioctl) s
+/F-gs-font 10 10 SF
+161 456 M
+(\(message *m\);) s
+/Courier-Bold 10 10 SUF
+29 445 M
+(static) s
+/F-gs-font 10 10 SF
+65 445 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 445 M
+(struct) s
+/F-gs-font 10 10 SF
+107 445 M
+( device * ) s
+/Courier-Bold 10 10 SUF
+167 445 M
+(magic_prepare) s
+/F-gs-font 10 10 SF
+245 445 M
+(\(dev_t device\);) s
+/Courier-Bold 10 10 SUF
+29 434 M
+(static) s
+/F-gs-font 10 10 SF
+65 434 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 434 M
+(int) s
+/F-gs-font 10 10 SF
+89 434 M
+( ) s
+/Courier-Bold 10 10 SUF
+95 434 M
+(magic_transfer) s
+/F-gs-font 10 10 SF
+179 434 M
+(\(endpoint_t endpt, ) s
+/Courier-Bold 10 10 SUF
+293 434 M
+(int) s
+/F-gs-font 10 10 SF
+311 434 M
+( opcode, u64_t position,) s
+29 423 M
+(        iovec_t *iov, ) s
+/Courier-Bold 10 10 SUF
+161 423 M
+(unsigned) s
+/F-gs-font 10 10 SF
+209 423 M
+( ) s
+/Courier-Bold 10 10 SUF
+215 423 M
+(int) s
+/F-gs-font 10 10 SF
+233 423 M
+( nr_req, endpoint_t user_endpt, ) s
+/Courier-Bold 10 10 SUF
+425 423 M
+(unsigned) s
+/F-gs-font 10 10 SF
+473 423 M
+( ) s
+/Courier-Bold 10 10 SUF
+479 423 M
+(int) s
+/F-gs-font 10 10 SF
+29 412 M
+(        flags\);) s
+/Courier-Bold 10 10 SUF
+29 401 M
+(static) s
+/F-gs-font 10 10 SF
+65 401 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 401 M
+(void) s
+/F-gs-font 10 10 SF
+95 401 M
+( ) s
+/Courier-Bold 10 10 SUF
+101 401 M
+(sef_local_startup) s
+/F-gs-font 10 10 SF
+203 401 M
+(\() s
+/Courier-Bold 10 10 SUF
+209 401 M
+(void) s
+/F-gs-font 10 10 SF
+233 401 M
+(\);) s
+/Courier-Bold 10 10 SUF
+29 390 M
+(static) s
+/F-gs-font 10 10 SF
+65 390 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 390 M
+(int) s
+/F-gs-font 10 10 SF
+89 390 M
+( ) s
+/Courier-Bold 10 10 SUF
+95 390 M
+(sef_cb_init) s
+/F-gs-font 10 10 SF
+161 390 M
+(\() s
+/Courier-Bold 10 10 SUF
+167 390 M
+(int) s
+/F-gs-font 10 10 SF
+185 390 M
+( type, sef_init_info_t *info\);) s
+/Courier-Bold 10 10 SUF
+29 379 M
+(static) s
+/F-gs-font 10 10 SF
+65 379 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 379 M
+(struct) s
+/F-gs-font 10 10 SF
+107 379 M
+( chardriver magic_tab =) s
+29 368 M
+({) s
+29 357 M
+(    magic_open,) s
+29 346 M
+(    magic_close,) s
+29 335 M
+(    magic_ioctl,) s
+29 324 M
+(    magic_prepare,) s
+29 313 M
+(    magic_transfer,) s
+29 302 M
+(    nop_cleanup,) s
+29 291 M
+(    nop_alarm,) s
+29 280 M
+(    nop_cancel,) s
+29 269 M
+(    nop_select,) s
+29 258 M
+(    NULL) s
+29 247 M
+(};) s
+/Courier-Bold 10 10 SUF
+29 236 M
+(static) s
+/F-gs-font 10 10 SF
+65 236 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 236 M
+(struct) s
+/F-gs-font 10 10 SF
+107 236 M
+( device magic_device;) s
+/Courier-Bold 10 10 SUF
+29 214 M
+(static) s
+/F-gs-font 10 10 SF
+65 214 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 214 M
+(int) s
+/F-gs-font 10 10 SF
+89 214 M
+( open_counter;) s
+/Courier-Bold 10 10 SUF
+29 192 M
+(static) s
+/F-gs-font 10 10 SF
+65 192 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 192 M
+(int) s
+/F-gs-font 10 10 SF
+89 192 M
+( ) s
+/Courier-Bold 10 10 SUF
+95 192 M
+(magic_open) s
+/F-gs-font 10 10 SF
+155 192 M
+(\(message *UNUSED\(m\)\)) s
+29 181 M
+({) s
+29 170 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 170 M
+(int) s
+/F-gs-font 10 10 SF
+71 170 M
+( rand = random\(\) % NUM_RESPONSES;) s
+29 159 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 159 M
+(char) s
+/F-gs-font 10 10 SF
+77 159 M
+( *message;) s
+29 148 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 148 M
+(if) s
+/F-gs-font 10 10 SF
+65 148 M
+( \(SEQ == SEQUENTIAL\)) s
+29 137 M
+(        message = answers[open_counter%NUM_RESPONSES];) s
+29 126 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 126 M
+(else) s
+/F-gs-font 10 10 SF
+29 115 M
+(        message = answers[rand];) s
+29 104 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 104 M
+(int) s
+/F-gs-font 10 10 SF
+71 104 M
+( i=0;) s
+29 93 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 93 M
+(switch) s
+/F-gs-font 10 10 SF
+89 93 M
+( \(CASE\)) s
+29 82 M
+(    {) s
+29 71 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 71 M
+(case) s
+/F-gs-font 10 10 SF
+101 71 M
+( ) s
+/Courier-Bold 10 10 SUF
+107 71 M
+(ORIGINAL) s
+/F-gs-font 10 10 SF
+155 71 M
+(:) s
+29 60 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 60 M
+(while) s
+/F-gs-font 10 10 SF
+131 60 M
+( \(message[i] != ) s
+/Courier-Bold 10 10 SUF
+227 60 M
+('\\0') s
+/F-gs-font 10 10 SF
+251 60 M
+(\)) s
+29 49 M
+(                printf\() s
+/Courier-Bold 10 10 SUF
+167 49 M
+("%c") s
+/F-gs-font 10 10 SF
+191 49 M
+(, message[i++]\);) s
+29 38 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 38 M
+(break) s
+/F-gs-font 10 10 SF
+131 38 M
+(;) s
+29 27 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 27 M
+(case) s
+/F-gs-font 10 10 SF
+101 27 M
+( ) s
+/Courier-Bold 10 10 SUF
+107 27 M
+(UPPER) s
+/F-gs-font 10 10 SF
+137 27 M
+(:) s
+29 16 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 16 M
+(while) s
+/F-gs-font 10 10 SF
+131 16 M
+( \(message[i] != ) s
+/Courier-Bold 10 10 SUF
+227 16 M
+('\\0') s
+/F-gs-font 10 10 SF
+251 16 M
+(\)) s
+29 5 M
+(                printf\() s
+/Courier-Bold 10 10 SUF
+167 5 M
+("%c") s
+/F-gs-font 10 10 SF
+191 5 M
+(, toupper\(message[i++]\)\);) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 2 def
+/fname (Magic8) def
+/fdir () def
+/ftail (Magic8) def
+% User defined strings:
+/fmodstr (Wed May 01 12:26:58 2013) def
+/pagenumstr (2) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+29 687 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 687 M
+(break) s
+/F-gs-font 10 10 SF
+131 687 M
+(;) s
+29 676 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 676 M
+(case) s
+/F-gs-font 10 10 SF
+101 676 M
+( ) s
+/Courier-Bold 10 10 SUF
+107 676 M
+(LOWER) s
+/F-gs-font 10 10 SF
+137 676 M
+(:) s
+29 665 M
+(             ) s
+/Courier-Bold 10 10 SUF
+107 665 M
+(while) s
+/F-gs-font 10 10 SF
+137 665 M
+( \(message[i] != ) s
+/Courier-Bold 10 10 SUF
+233 665 M
+('\\0') s
+/F-gs-font 10 10 SF
+257 665 M
+(\)) s
+29 654 M
+(                 printf\() s
+/Courier-Bold 10 10 SUF
+173 654 M
+("%c") s
+/F-gs-font 10 10 SF
+197 654 M
+(, tolower\(message[i++]\)\);) s
+29 643 M
+(    }) s
+29 632 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 632 M
+(if) s
+/F-gs-font 10 10 SF
+65 632 M
+( \(STOKE\)) s
+29 621 M
+(        printf\() s
+/Courier-Bold 10 10 SUF
+119 621 M
+("!!!") s
+/F-gs-font 10 10 SF
+149 621 M
+(\);) s
+29 610 M
+(    printf\() s
+/Courier-Bold 10 10 SUF
+95 610 M
+("\\n") s
+/F-gs-font 10 10 SF
+119 610 M
+(\);) s
+29 599 M
+(    open_counter++;) s
+29 588 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 588 M
+(return) s
+/F-gs-font 10 10 SF
+89 588 M
+( OK;) s
+29 577 M
+(}) s
+/Courier-Bold 10 10 SUF
+29 555 M
+(static) s
+/F-gs-font 10 10 SF
+65 555 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 555 M
+(int) s
+/F-gs-font 10 10 SF
+89 555 M
+( ) s
+/Courier-Bold 10 10 SUF
+95 555 M
+(magic_close) s
+/F-gs-font 10 10 SF
+161 555 M
+(\(message *UNUSED\(m\)\)) s
+29 544 M
+({) s
+29 533 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 533 M
+(return) s
+/F-gs-font 10 10 SF
+89 533 M
+( OK;) s
+29 522 M
+(}) s
+/Courier-Bold 10 10 SUF
+29 500 M
+(static) s
+/F-gs-font 10 10 SF
+65 500 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 500 M
+(int) s
+/F-gs-font 10 10 SF
+89 500 M
+( ) s
+/Courier-Bold 10 10 SUF
+95 500 M
+(magic_ioctl) s
+/F-gs-font 10 10 SF
+161 500 M
+(\(message *m\)) s
+29 489 M
+({) s
+29 478 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 478 M
+(switch) s
+/F-gs-font 10 10 SF
+89 478 M
+( \(m->TTY_REQUEST\)) s
+29 467 M
+(    {) s
+29 456 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 456 M
+(case) s
+/F-gs-font 10 10 SF
+101 456 M
+( ) s
+/Courier-Bold 10 10 SUF
+107 456 M
+(SET_ORIG) s
+/F-gs-font 10 10 SF
+155 456 M
+(:) s
+29 445 M
+(            CASE = ORIGINAL;) s
+29 434 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 434 M
+(break) s
+/F-gs-font 10 10 SF
+131 434 M
+(;) s
+29 423 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 423 M
+(case) s
+/F-gs-font 10 10 SF
+101 423 M
+( ) s
+/Courier-Bold 10 10 SUF
+107 423 M
+(SET_UPPER) s
+/F-gs-font 10 10 SF
+161 423 M
+(:) s
+29 412 M
+(            CASE = UPPER;) s
+29 401 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 401 M
+(break) s
+/F-gs-font 10 10 SF
+131 401 M
+(;) s
+29 390 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 390 M
+(case) s
+/F-gs-font 10 10 SF
+101 390 M
+( ) s
+/Courier-Bold 10 10 SUF
+107 390 M
+(SET_LOWER) s
+/F-gs-font 10 10 SF
+161 390 M
+(:) s
+29 379 M
+(            CASE = LOWER;) s
+29 368 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 368 M
+(break) s
+/F-gs-font 10 10 SF
+131 368 M
+(;) s
+29 357 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 357 M
+(case) s
+/F-gs-font 10 10 SF
+101 357 M
+( ) s
+/Courier-Bold 10 10 SUF
+107 357 M
+(SET_SEQUENTIAL) s
+/F-gs-font 10 10 SF
+191 357 M
+(:) s
+29 346 M
+(            SEQ = SEQUENTIAL;) s
+29 335 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 335 M
+(break) s
+/F-gs-font 10 10 SF
+131 335 M
+(;) s
+29 324 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 324 M
+(case) s
+/F-gs-font 10 10 SF
+101 324 M
+( ) s
+/Courier-Bold 10 10 SUF
+107 324 M
+(SET_RANDOM) s
+/F-gs-font 10 10 SF
+167 324 M
+(:) s
+29 313 M
+(            SEQ = RANDOM;) s
+29 302 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 302 M
+(break) s
+/F-gs-font 10 10 SF
+131 302 M
+(;) s
+29 291 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 291 M
+(case) s
+/F-gs-font 10 10 SF
+101 291 M
+( ) s
+/Courier-Bold 10 10 SUF
+107 291 M
+(SET_STOKED) s
+/F-gs-font 10 10 SF
+167 291 M
+(:) s
+29 280 M
+(            STOKE = STOKED;) s
+29 269 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 269 M
+(break) s
+/F-gs-font 10 10 SF
+131 269 M
+(;) s
+29 258 M
+(        ) s
+/Courier-Bold 10 10 SUF
+77 258 M
+(case) s
+/F-gs-font 10 10 SF
+101 258 M
+( ) s
+/Courier-Bold 10 10 SUF
+107 258 M
+(SET_NOT_STOKED) s
+/F-gs-font 10 10 SF
+191 258 M
+(:) s
+29 247 M
+(            STOKE = NOT_STOKED;) s
+29 236 M
+(            ) s
+/Courier-Bold 10 10 SUF
+101 236 M
+(break) s
+/F-gs-font 10 10 SF
+131 236 M
+(;) s
+29 225 M
+(    }) s
+29 214 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 214 M
+(return) s
+/F-gs-font 10 10 SF
+89 214 M
+( OK;) s
+29 203 M
+(}) s
+/Courier-Bold 10 10 SUF
+29 181 M
+(static) s
+/F-gs-font 10 10 SF
+65 181 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 181 M
+(struct) s
+/F-gs-font 10 10 SF
+107 181 M
+( device * ) s
+/Courier-Bold 10 10 SUF
+167 181 M
+(magic_prepare) s
+/F-gs-font 10 10 SF
+245 181 M
+(\(dev_t UNUSED\(dev\)\)) s
+29 170 M
+({) s
+29 159 M
+(    magic_device.dv_base = make64\(0, 0\);) s
+29 148 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 148 M
+(return) s
+/F-gs-font 10 10 SF
+89 148 M
+( &magic_device;) s
+29 137 M
+(}) s
+/Courier-Bold 10 10 SUF
+29 115 M
+(static) s
+/F-gs-font 10 10 SF
+65 115 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 115 M
+(int) s
+/F-gs-font 10 10 SF
+89 115 M
+( ) s
+/Courier-Bold 10 10 SUF
+95 115 M
+(magic_transfer) s
+/F-gs-font 10 10 SF
+179 115 M
+(\(endpoint_t endpt, ) s
+/Courier-Bold 10 10 SUF
+293 115 M
+(int) s
+/F-gs-font 10 10 SF
+311 115 M
+( opcode, u64_t position,) s
+29 104 M
+(    iovec_t *iov, ) s
+/Courier-Bold 10 10 SUF
+137 104 M
+(unsigned) s
+/F-gs-font 10 10 SF
+185 104 M
+( nr_req, endpoint_t UNUSED\(user_endpt\),) s
+29 93 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 93 M
+(unsigned) s
+/F-gs-font 10 10 SF
+101 93 M
+( ) s
+/Courier-Bold 10 10 SUF
+107 93 M
+(int) s
+/F-gs-font 10 10 SF
+125 93 M
+( UNUSED\(flags\)\)) s
+29 82 M
+({) s
+29 71 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 71 M
+(return) s
+/F-gs-font 10 10 SF
+89 71 M
+( OK;) s
+29 60 M
+(}) s
+/Courier-Bold 10 10 SUF
+29 38 M
+(static) s
+/F-gs-font 10 10 SF
+65 38 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 38 M
+(void) s
+/F-gs-font 10 10 SF
+95 38 M
+( ) s
+/Courier-Bold 10 10 SUF
+101 38 M
+(sef_local_startup) s
+/F-gs-font 10 10 SF
+203 38 M
+(\(\)) s
+29 27 M
+({) s
+29 16 M
+(    sef_setcb_init_fresh\(sef_cb_init\);) s
+29 5 M
+(    sef_setcb_init_lu\(sef_cb_init\);) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 3 def
+/fname (Magic8) def
+/fdir () def
+/ftail (Magic8) def
+% User defined strings:
+/fmodstr (Wed May 01 12:26:58 2013) def
+/pagenumstr (3) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+29 687 M
+(    sef_setcb_init_restart\(sef_cb_init\);) s
+29 676 M
+(    sef_setcb_lu_prepare\(sef_cb_lu_prepare_always_ready\);) s
+29 665 M
+(    sef_setcb_lu_state_isvalid\(sef_cb_lu_state_isvalid_standard\);) s
+29 654 M
+(    sef_startup\(\);) s
+29 643 M
+(}) s
+/Courier-Bold 10 10 SUF
+29 621 M
+(static) s
+/F-gs-font 10 10 SF
+65 621 M
+( ) s
+/Courier-Bold 10 10 SUF
+71 621 M
+(int) s
+/F-gs-font 10 10 SF
+89 621 M
+( ) s
+/Courier-Bold 10 10 SUF
+95 621 M
+(sef_cb_init) s
+/F-gs-font 10 10 SF
+161 621 M
+(\() s
+/Courier-Bold 10 10 SUF
+167 621 M
+(int) s
+/F-gs-font 10 10 SF
+185 621 M
+( type, sef_init_info_t *UNUSED\(info\)\)) s
+29 610 M
+({) s
+29 599 M
+(    CASE = ORIGINAL;) s
+29 588 M
+(    SEQ = SEQUENTIAL;) s
+29 577 M
+(    STOKE = NOT_STOKED;) s
+29 566 M
+(    srandom\(time\(NULL\)\);) s
+29 555 M
+(    open_counter = 0;) s
+29 544 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 544 M
+(return) s
+/F-gs-font 10 10 SF
+89 544 M
+( OK;) s
+29 533 M
+(}) s
+/Courier-Bold 10 10 SUF
+29 511 M
+(int) s
+/F-gs-font 10 10 SF
+47 511 M
+( ) s
+/Courier-Bold 10 10 SUF
+53 511 M
+(main) s
+/F-gs-font 10 10 SF
+77 511 M
+(\() s
+/Courier-Bold 10 10 SUF
+83 511 M
+(void) s
+/F-gs-font 10 10 SF
+107 511 M
+(\)) s
+29 500 M
+({) s
+29 489 M
+(    sef_local_startup\(\);) s
+29 478 M
+(    chardriver_task\(&magic_tab, CHARDRIVER_SYNC\);) s
+29 467 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 467 M
+(return) s
+/F-gs-font 10 10 SF
+89 467 M
+( OK;) s
+29 456 M
+(}) s
+/Courier-Oblique 10 10 SUF
+29 445 M
+(/*) s
+29 434 M
+( * File:   magic8.h) s
+29 423 M
+( * Author: Michael Kepple) s
+29 412 M
+( * Date:   24 Apr 2013) s
+29 401 M
+(*/) s
+/F-gs-font 10 10 SF
+29 390 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 390 M
+(ifndef) s
+/F-gs-font 10 10 SF
+71 390 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 390 M
+(__MAGIC8_H) s
+/F-gs-font 10 10 SF
+29 379 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 379 M
+(define) s
+/F-gs-font 10 10 SF
+71 379 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 379 M
+(__MAGIC8_H) s
+/F-gs-font 10 10 SF
+29 368 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 368 M
+(define) s
+/F-gs-font 10 10 SF
+71 368 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 368 M
+(NUM_RESPONSES) s
+/F-gs-font 10 10 SF
+155 368 M
+( 5) s
+29 357 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 357 M
+(define) s
+/F-gs-font 10 10 SF
+71 357 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 357 M
+(SET_SEQUENTIAL) s
+/F-gs-font 10 10 SF
+161 357 M
+( 0) s
+29 346 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 346 M
+(define) s
+/F-gs-font 10 10 SF
+71 346 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 346 M
+(SET_RANDOM) s
+/F-gs-font 10 10 SF
+137 346 M
+( 1) s
+29 335 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 335 M
+(define) s
+/F-gs-font 10 10 SF
+71 335 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 335 M
+(SET_ORIG) s
+/F-gs-font 10 10 SF
+125 335 M
+( 2) s
+29 324 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 324 M
+(define) s
+/F-gs-font 10 10 SF
+71 324 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 324 M
+(SET_UPPER) s
+/F-gs-font 10 10 SF
+131 324 M
+( 3) s
+29 313 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 313 M
+(define) s
+/F-gs-font 10 10 SF
+71 313 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 313 M
+(SET_LOWER) s
+/F-gs-font 10 10 SF
+131 313 M
+( 4) s
+29 302 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 302 M
+(define) s
+/F-gs-font 10 10 SF
+71 302 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 302 M
+(SET_STOKED) s
+/F-gs-font 10 10 SF
+137 302 M
+( 5) s
+29 291 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 291 M
+(define) s
+/F-gs-font 10 10 SF
+71 291 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 291 M
+(SET_NOT_STOKED) s
+/F-gs-font 10 10 SF
+161 291 M
+( 6) s
+29 280 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 280 M
+(define) s
+/F-gs-font 10 10 SF
+71 280 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 280 M
+(SEQUENTIAL) s
+/F-gs-font 10 10 SF
+137 280 M
+( 0) s
+29 269 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 269 M
+(define) s
+/F-gs-font 10 10 SF
+71 269 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 269 M
+(RANDOM) s
+/F-gs-font 10 10 SF
+113 269 M
+( 1) s
+29 258 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 258 M
+(define) s
+/F-gs-font 10 10 SF
+71 258 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 258 M
+(ORIGINAL) s
+/F-gs-font 10 10 SF
+125 258 M
+( 0) s
+29 247 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 247 M
+(define) s
+/F-gs-font 10 10 SF
+71 247 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 247 M
+(UPPER) s
+/F-gs-font 10 10 SF
+107 247 M
+( 1) s
+29 236 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 236 M
+(define) s
+/F-gs-font 10 10 SF
+71 236 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 236 M
+(LOWER) s
+/F-gs-font 10 10 SF
+107 236 M
+( 2) s
+29 225 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 225 M
+(define) s
+/F-gs-font 10 10 SF
+71 225 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 225 M
+(NOT_STOKED) s
+/F-gs-font 10 10 SF
+137 225 M
+( 0) s
+29 214 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 214 M
+(define) s
+/F-gs-font 10 10 SF
+71 214 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 214 M
+(STOKED) s
+/F-gs-font 10 10 SF
+113 214 M
+( 1) s
+/Courier-Bold 10 10 SUF
+29 203 M
+(int) s
+/F-gs-font 10 10 SF
+47 203 M
+( CASE;) s
+/Courier-Bold 10 10 SUF
+29 192 M
+(int) s
+/F-gs-font 10 10 SF
+47 192 M
+( SEQ;) s
+/Courier-Bold 10 10 SUF
+29 181 M
+(int) s
+/F-gs-font 10 10 SF
+47 181 M
+( STOKE;) s
+/Courier-Bold 10 10 SUF
+29 170 M
+(char) s
+/F-gs-font 10 10 SF
+53 170 M
+( *answers[5] = {) s
+/Courier-Bold 10 10 SUF
+149 170 M
+("0 No") s
+/F-gs-font 10 10 SF
+185 170 M
+(, ) s
+/Courier-Bold 10 10 SUF
+197 170 M
+("1 Yes") s
+/F-gs-font 10 10 SF
+239 170 M
+(, ) s
+/Courier-Bold 10 10 SUF
+251 170 M
+("2 Maybe") s
+/F-gs-font 10 10 SF
+305 170 M
+(, ) s
+/Courier-Bold 10 10 SUF
+317 170 M
+("3 Not a chance in hell") s
+/F-gs-font 10 10 SF
+461 170 M
+(,) s
+29 159 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 159 M
+("4 Ab-so-lutely") s
+/F-gs-font 10 10 SF
+149 159 M
+(};) s
+29 148 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 148 M
+(endif) s
+/F-gs-font 10 10 SF
+29 137 M
+(#) s
+29 126 M
+(# ) s
+/Courier-Bold 10 10 SUF
+41 126 M
+(Makefile) s
+/F-gs-font 10 10 SF
+89 126 M
+( ) s
+/Courier-Bold 10 10 SUF
+95 126 M
+(for) s
+/F-gs-font 10 10 SF
+113 126 M
+( ) s
+/Courier-Bold 10 10 SUF
+119 126 M
+(magic8) s
+/F-gs-font 10 10 SF
+155 126 M
+( ) s
+/Courier-Bold 10 10 SUF
+161 126 M
+(driver) s
+/F-gs-font 10 10 SF
+29 115 M
+(# ) s
+/Courier-Bold 10 10 SUF
+41 115 M
+(Author:) s
+/F-gs-font 10 10 SF
+83 115 M
+( ) s
+/Courier-Bold 10 10 SUF
+89 115 M
+(Michael) s
+/F-gs-font 10 10 SF
+131 115 M
+( ) s
+/Courier-Bold 10 10 SUF
+137 115 M
+(Kepple) s
+/F-gs-font 10 10 SF
+29 104 M
+(# ) s
+/Courier-Bold 10 10 SUF
+41 104 M
+(Date:) s
+/F-gs-font 10 10 SF
+71 104 M
+(   24 ) s
+/Courier-Bold 10 10 SUF
+107 104 M
+(Apr) s
+/F-gs-font 10 10 SF
+125 104 M
+( 2013) s
+29 93 M
+(#) s
+29 82 M
+(PROG=   magic8) s
+29 71 M
+(SRCS=   magic8.c) s
+29 49 M
+(DPADD+= ${LIBCHARDRIVER} ${LIBSYS}) s
+29 38 M
+(LDADD+= -lchardriver -lsys) s
+29 16 M
+(MAN=) s
+_R
+S
+%%Page: (4) 4
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 4 def
+/fname (Magic8) def
+/fdir () def
+/ftail (Magic8) def
+% User defined strings:
+/fmodstr (Wed May 01 12:26:58 2013) def
+/pagenumstr (4) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+29 687 M
+(BINDIR?= /usr/sbin) s
+29 665 M
+(.include <minix.service.mk>) s
+29 654 M
+(# ) s
+/Courier-Bold 10 10 SUF
+41 654 M
+(Results) s
+/F-gs-font 10 10 SF
+83 654 M
+( ) s
+/Courier-Bold 10 10 SUF
+89 654 M
+(file) s
+/F-gs-font 10 10 SF
+113 654 M
+( ) s
+/Courier-Bold 10 10 SUF
+119 654 M
+(for) s
+/F-gs-font 10 10 SF
+137 654 M
+( ) s
+/Courier-Bold 10 10 SUF
+143 654 M
+(Magic8) s
+/F-gs-font 10 10 SF
+179 654 M
+( ) s
+/Courier-Bold 10 10 SUF
+185 654 M
+(driver) s
+/F-gs-font 10 10 SF
+221 654 M
+( ) s
+/Courier-Bold 10 10 SUF
+227 654 M
+(testing) s
+/F-gs-font 10 10 SF
+29 643 M
+(# ) s
+/Courier-Bold 10 10 SUF
+41 643 M
+(Author:) s
+/F-gs-font 10 10 SF
+83 643 M
+( ) s
+/Courier-Bold 10 10 SUF
+89 643 M
+(Michael) s
+/F-gs-font 10 10 SF
+131 643 M
+( ) s
+/Courier-Bold 10 10 SUF
+137 643 M
+(Kepple) s
+/F-gs-font 10 10 SF
+29 632 M
+(# ) s
+/Courier-Bold 10 10 SUF
+41 632 M
+(Date:) s
+/F-gs-font 10 10 SF
+71 632 M
+(   24 ) s
+/Courier-Bold 10 10 SUF
+107 632 M
+(Apr) s
+/F-gs-font 10 10 SF
+125 632 M
+( 2013) s
+29 610 M
+(Testing Sequential/Original Case:) s
+29 599 M
+(0 No) s
+29 588 M
+(1 Yes) s
+29 577 M
+(2 Maybe) s
+29 566 M
+(3 Not a chance in hell) s
+29 555 M
+(4 Ab-so-lutely) s
+29 544 M
+(Testing Random/Uppercase:) s
+29 533 M
+(1 YES) s
+29 522 M
+(2 YES) s
+29 511 M
+(4 AB-SO-LUTELY) s
+29 500 M
+(2 MAYBE) s
+29 489 M
+(0 NO) s
+29 478 M
+(Testing Random/Lowercare/Stoked:) s
+29 467 M
+(3 no a chance in hell!!!) s
+29 456 M
+(4 ab-so-lutely!!!) s
+29 445 M
+(0 no!!!) s
+29 434 M
+(4 ab-so-lutely!!!) s
+29 423 M
+(1 yes!!!) s
+/Courier-Oblique 10 10 SUF
+29 412 M
+(/*) s
+29 401 M
+( *) s
+29 390 M
+( * test.c) s
+29 379 M
+( *) s
+29 368 M
+( * Author:      Michael Kepple) s
+29 357 M
+( * Date:        24 Apr 2013) s
+29 346 M
+( * Description: test file for magic8 driver functionality.) s
+29 335 M
+( *) s
+29 324 M
+(*/) s
+/F-gs-font 10 10 SF
+29 313 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 313 M
+(include) s
+/F-gs-font 10 10 SF
+77 313 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 313 M
+(<stdio.h>) s
+/F-gs-font 10 10 SF
+29 302 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 302 M
+(include) s
+/F-gs-font 10 10 SF
+77 302 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 302 M
+(<stdlib.h>) s
+/F-gs-font 10 10 SF
+29 291 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 291 M
+(include) s
+/F-gs-font 10 10 SF
+77 291 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 291 M
+(<sys/ioctl.h>) s
+/F-gs-font 10 10 SF
+29 280 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 280 M
+(include) s
+/F-gs-font 10 10 SF
+77 280 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 280 M
+(<sys/types.h>) s
+/F-gs-font 10 10 SF
+29 269 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 269 M
+(include) s
+/F-gs-font 10 10 SF
+77 269 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 269 M
+(<fcntl.h>) s
+/F-gs-font 10 10 SF
+29 258 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 258 M
+(include) s
+/F-gs-font 10 10 SF
+77 258 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 258 M
+(<ctype.h>) s
+/F-gs-font 10 10 SF
+29 247 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 247 M
+(include) s
+/F-gs-font 10 10 SF
+77 247 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 247 M
+("magic8.h") s
+/F-gs-font 10 10 SF
+/Courier-Bold 10 10 SUF
+29 225 M
+(int) s
+/F-gs-font 10 10 SF
+47 225 M
+( ) s
+/Courier-Bold 10 10 SUF
+53 225 M
+(main) s
+/F-gs-font 10 10 SF
+77 225 M
+(\(\)) s
+29 214 M
+({) s
+29 203 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 203 M
+(int) s
+/F-gs-font 10 10 SF
+71 203 M
+( fd;) s
+29 192 M
+(    printf\() s
+/Courier-Bold 10 10 SUF
+95 192 M
+("Testing Sequential/Original Case:\\n") s
+/F-gs-font 10 10 SF
+317 192 M
+(\);) s
+29 181 M
+(    fd = open\() s
+/Courier-Bold 10 10 SUF
+113 181 M
+("/dev/magic8") s
+/F-gs-font 10 10 SF
+191 181 M
+(, 0\);) s
+29 170 M
+(    system\() s
+/Courier-Bold 10 10 SUF
+95 170 M
+("cat /dev/magic8") s
+/F-gs-font 10 10 SF
+197 170 M
+(\);) s
+29 159 M
+(    system\() s
+/Courier-Bold 10 10 SUF
+95 159 M
+("cat /dev/magic8") s
+/F-gs-font 10 10 SF
+197 159 M
+(\);) s
+29 148 M
+(    system\() s
+/Courier-Bold 10 10 SUF
+95 148 M
+("cat /dev/magic8") s
+/F-gs-font 10 10 SF
+197 148 M
+(\);) s
+29 137 M
+(    system\() s
+/Courier-Bold 10 10 SUF
+95 137 M
+("cat /dev/magic8") s
+/F-gs-font 10 10 SF
+197 137 M
+(\);) s
+29 126 M
+(    printf\() s
+/Courier-Bold 10 10 SUF
+95 126 M
+("Testing Random/Uppercase:\\n") s
+/F-gs-font 10 10 SF
+269 126 M
+(\);) s
+29 115 M
+(    ioctl\(fd, SET_RANDOM, NULL\);) s
+29 104 M
+(    ioctl\(fd, SET_UPPER, NULL\);) s
+29 93 M
+(    system\() s
+/Courier-Bold 10 10 SUF
+95 93 M
+("cat /dev/magic8") s
+/F-gs-font 10 10 SF
+197 93 M
+(\);) s
+29 82 M
+(    system\() s
+/Courier-Bold 10 10 SUF
+95 82 M
+("cat /dev/magic8") s
+/F-gs-font 10 10 SF
+197 82 M
+(\);) s
+29 71 M
+(    system\() s
+/Courier-Bold 10 10 SUF
+95 71 M
+("cat /dev/magic8") s
+/F-gs-font 10 10 SF
+197 71 M
+(\);) s
+29 60 M
+(    system\() s
+/Courier-Bold 10 10 SUF
+95 60 M
+("cat /dev/magic8") s
+/F-gs-font 10 10 SF
+197 60 M
+(\);) s
+29 49 M
+(    system\() s
+/Courier-Bold 10 10 SUF
+95 49 M
+("cat /dev/magic8") s
+/F-gs-font 10 10 SF
+197 49 M
+(\);) s
+29 38 M
+(    printf\() s
+/Courier-Bold 10 10 SUF
+95 38 M
+("Testing Random/Lowercase/Stoked:\\n") s
+/F-gs-font 10 10 SF
+311 38 M
+(\);) s
+29 27 M
+(    ioctl\(fd, SET_LOWER, NULL\);) s
+29 16 M
+(    ioctl\(fd, SET_STOKED, NULL\);) s
+29 5 M
+(    system\() s
+/Courier-Bold 10 10 SUF
+95 5 M
+("cat /dev/magic8") s
+/F-gs-font 10 10 SF
+197 5 M
+(\);) s
+_R
+S
+%%Page: (5) 5
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 5 def
+/fname (Magic8) def
+/fdir () def
+/ftail (Magic8) def
+% User defined strings:
+/fmodstr (Wed May 01 12:26:58 2013) def
+/pagenumstr (5) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+29 687 M
+(    system\() s
+/Courier-Bold 10 10 SUF
+95 687 M
+("cat /dev/magic8") s
+/F-gs-font 10 10 SF
+197 687 M
+(\);) s
+29 676 M
+(    system\() s
+/Courier-Bold 10 10 SUF
+95 676 M
+("cat /dev/magic8") s
+/F-gs-font 10 10 SF
+197 676 M
+(\);) s
+29 665 M
+(    system\() s
+/Courier-Bold 10 10 SUF
+95 665 M
+("cat /dev/magic8") s
+/F-gs-font 10 10 SF
+197 665 M
+(\);) s
+29 654 M
+(    system\() s
+/Courier-Bold 10 10 SUF
+95 654 M
+("cat /dev/magic8") s
+/F-gs-font 10 10 SF
+197 654 M
+(\);) s
+29 643 M
+(    ioctl\(fd, SET_ORIG, NULL\);) s
+29 632 M
+(    ioctl\(fd, SET_SEQUENTIAL, NULL\);) s
+29 621 M
+(    ioctl\(fd, SET_NOT_STOKED, NULL\);) s
+29 610 M
+(}) s
+_R
+S
+%%Trailer
+%%Pages: 5
+%%DocumentNeededResources: font Courier-Oblique Courier-Bold Courier 
+%%EOF

@@ -1,0 +1,49 @@
+Michael Kepple
+CS 5520
+25 Mar 2013
+
+// Note: decided to switch to Python since I've been meaning to learn it forever. 
+
+Single Teller Example Output (3 runs):
+
+#1 - Customers Served: 60
+Average Service Time (secs): 45
+Maximum Service Time (secs): 45
+Minimum Service Time (secs): 45
+
+#2 - Customers Served: 60
+Average Service Time (secs): 45
+Maximum Service Time (secs): 45
+Minimum Service Time (secs): 45
+
+#3 - Customers Served: 60
+Average Service Time (secs): 45
+Maximum Service Time (secs): 45
+Minimum Service Time (secs): 45
+
+Three Teller Example Output (3 runs):
+
+#1 - Customers Served: 345
+Average Queue Time (secs): 210
+Maximum Queue Time (secs): 1148
+Minimum Queue Time (secs): 0
+Average Service Time (secs): 143
+Maximum Service Time (secs): 789
+Minimum Service Time (secs): 0
+
+#2 - Customers Served: 321
+Average Queue Time (secs): 462
+Maximum Queue Time (secs): 3063
+Minimum Queue Time (secs): 0
+Average Service Time (secs): 165
+Maximum Service Time (secs): 1052
+Minimum Service Time (secs): 0
+
+#3 - Customers Served: 351
+Average Queue Time (secs): 322
+Maximum Queue Time (secs): 1515
+Minimum Queue Time (secs): 0
+Average Service Time (secs): 150
+Maximum Service Time (secs): 817
+Minimum Service Time (secs): 0
+

@@ -1,0 +1,139 @@
+Michael Kepple
+10 Apr 2013
+CS 5520 - Operating Systems
+Lab 09 Deliverable
+
+#1 - Server Hello World - modify the IS so that the F9 key displays "Hello,
+     World!" on the console.
+
+What I did:
+     + Added hook_entry to hooks[] in usr/src/servers/is/dmp.c.
+     + Added hw_dmp() function to usr/src/servers/is/dmp_kernel.c
+     + Added function prototype to usr/src/servers/is/proto.h.
+     + make install
+     + service down is
+     + service up /sbin/is
+
+Diff output for dmp.c:
+25a26
+>	{ F9,	hw_dmp, "Print Hello, World" },
+
+Diff output for dmp_kernel.c:
+59a60,64
+> void hw_dmp()
+> {
+>   printf("Hello, World!");
+> }
+>
+
+Diff output for proto.h:
+12a13
+> void hw_dmp(void);
+
+#2 - Kernel Table - create a 3x3 matrix within the kernel. It must be
+     dynamically initialized.
+
+What I did:
+     + added matrix declaration to usr/src/kernel/glo.h
+     + added matrix definition to usr/src/kernel/main.c
+     + make install
+     + make mdboot from usr/src/releasetools
+
+Diff output for glo.h:
+26a27
+> EXTERN int matrix[3][3];
+
+Diff output for main.c:
+39a40
+> static void printMatrix(void);
+62a64
+>    printMatrix();
+312a315,324
+> static void printMatrix(void)
+> {
+>   int i, j;
+>   for (i=0; i<3; i++)
+>     for (j=0; j<3; j++)
+>     {
+>       matrix[i][j] = i+j;
+>       printf("Matrix[%d][%d]: %d\n", i, j, matrix[i][j]);
+>     }
+> }
+
+#3 - Display Kernel Table from the Kernel - display the table created in the
+     previous exercise by simply outputting from the same area of the kernel
+     as the instantiated array.
+
+What I did:
+     + Printed out the Matrix as it was instantiated - see above.
+
+Diff output for main.c:
+39a40
+> static void printMatrix(void);
+62a64
+>    printMatrix();
+312a315,324
+> static void printMatrix(void)
+> {
+>   int i, j;
+>   for (i=0; i<3; i++)
+>     for (j=0; j<3; j++)
+>     {
+>       matrix[i][j] = i+j;
+>       printf("Matrix[%d][%d]: %d\n", i, j, matrix[i][j]);
+>     }
+> }
+
+#4 - Display Kernel Table Using the IS - Again display the table created earlier.
+     This time, however, use SF7 ("shift F7") to request that the array be 
+     displayed.
+
+What I did:
+     + added a get_matrix(dst) definition in usr/src/include/minix/syslib.h
+     + added a GET_MATRIX message in usr/src/include/minix/com.h
+     + edited usr/src/kernel/do_getinfo.c to return the matrix when we ask.
+     + added hook_entry to hooks[] in usr/src/servers/is/dmp.c
+     + added matrix_dmp() function to usr/src/servers/is/dmp_kernel.c
+     + added function prototype to usr/src/servers/is/proto.h
+     + make install from usr/src or all individual folders, make hdboot from
+       usr/src/releasetools
+     + shutdown -r (reboot)
+
+Diff output for syslib.h:
+159a160
+> # define sys_getmatrix(dst)      sys_getinfo(GET_MATRIX, dst, 0, 0, 0)
+
+Diff output for com.h:
+474a475
+> #    define GET_MATRIX     25     /* get matrix initialized during boot */
+
+Diff output for do_getinfo.c:
+52a53,57
+>      case GET_MATRIX: {
+>        length = 9*sizeof(int);
+>        src)vir = (vir_bytes) &matrix;
+>        break;
+>      }
+
+Diff output for dmp.c:
+33a34
+>        { SF7,   matrix_dmp, "Print out matrix from kernel" },
+
+Diff output for dmp_kernel.c:
+64a65,74
+> void matrix_dmp()
+> {
+>   int tempMatrix[3][3];
+>   sys_getmatrix(&tempMatrix);
+>   int i,j;
+>   for (i=0; i<3; i++)
+>     for (j=0; j<3; j++)
+>       printf("Matrix[%d][%d]: %d\n", i,j,tempMatrix[i][j]);
+> }
+>
+
+Diff output for proto.h:
+13a14
+> void matrix_dmp(void);
+
+

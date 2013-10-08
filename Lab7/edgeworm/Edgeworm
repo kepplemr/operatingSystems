@@ -1,0 +1,68 @@
+/*
+ * edgeworm.c
+ *
+ * Author: Michael Kepple
+ * Date:   25 Mar 2013
+ * Description: 'worm-like' text slides around the borders of the screen.
+*/
+#include "edgeworm.h"
+
+int main()
+{
+    char text[] = "MICHAEL";
+    initscr();
+    COLS--;
+    LINES--;
+    int rWall = COLS;
+    int dWall = rWall + LINES;
+    int lWall = dWall + rWall;
+    curs_set(NO_CURSOR);
+    int i=0,j=0,currPos=0;
+    int totalChars = (COLS)*2+(LINES)*2;
+    for (;;i++)
+    {
+        clear();
+        i %= totalChars;
+        for (j=0; j<NAMELENGTH; j++)
+        {
+            currPos = i+j;
+            if (currPos < rWall)
+                mvwaddch(stdscr, 0, currPos, text[j]);
+            else if (currPos < dWall)
+                mvwaddch(stdscr, (currPos-rWall), COLS, text[j]);
+            else if (currPos < lWall)
+                mvwaddch(stdscr, LINES, (lWall-currPos), text[j]);
+            else
+                mvwaddch(stdscr, ((LINES+lWall)-currPos), 0, text[j]);
+        }
+        struct timespec waitTime, interruptTime;
+        waitTime.tv_nsec = NANOSLEEP;
+        nanosleep(&waitTime, &interruptTime);
+        refresh();
+    }
+    getch();
+    endwin();
+    return 0;
+}
+/*
+ * File: edgeworm.h
+ *
+ * Author: Michael Kepple
+ * Date:   28 Mar 2013
+ *
+*/
+#ifndef EDGEWORM_H
+#define EDGEWORM_H
+#include <ncurses.h>
+#include <time.h>
+#define NO_CURSOR 0
+#define NANOSLEEP 30000000L
+#define NAMELENGTH 7
+#endif
+#
+# Makefile for edgeworm
+# Author: Michael Kepple
+# Date:   28 Mar 2013
+#
+edgeworm: edgeworm.c edgeworm.h
+	gcc edgeworm.c edgeworm.h -lncurses -o edgeworm

@@ -1,0 +1,119 @@
+Lab 0 Solutions
+Michael Kepple
+
+===================================================================================
+Problem 1: User Count
+===================================================================================
+Code: who | sed 's/ .*//" | uniq | wc -l
+
+Test: 
+
+(student)~% who
+colbertbg pts/0        2013-01-24 12:50 (71-12-216-41.dhcp.spbg.sc.charter.com) 
+feimsterwj pts/1        2013-01-24 12:18 (csl2-208.cs.appstate.edu) 
+root     tty1         2012-12-17 13:20 (:0) 
+root     pts/2        2012-12-17 13:20 (:0.0)
+hodgesja pts/3        2013-01-24 13:41 (68-119-41-76.dhcp.spbg.sc.charter.com)
+efb      pts/4        2013-01-24 13:36 (ip-152010196072.cs.appstate.edu)
+root     pts/5        2013-01-23 09:47 (csfac-242.cs.appstate.edu)
+johnsonj1 pts/7        2013-01-24 13:42 (wnat-152010251098.appstate.edu)
+beauchampme pts/8        2013-01-24 00:31 (ip-152010160060.reslife.appstate.edu)
+efb      pts/9        2013-01-24 13:25 (ip-152010196072.cs.appstate.edu)
+deanzt   pts/10       2013-01-24 12:24 (cspub231.cs.appstate.edu)
+kepplemr pts/11       2013-01-24 13:37 (csgs154.cs.appstate.edu)
+kepplemr pts/12       2013-01-24 13:45 (csgs192.cs.appstate.edu)
+ab67597  pts/13       2013-01-24 10:08 (phy244-8.phys.appstate.edu)
+williamsonst pts/14       2013-01-24 13:46 (cspub229.cs.appstate.edu)
+garceaur pts/15       2013-01-24 13:46 (cspub230.cs.appstate.edu)
+kepplemr pts/16       2013-01-24 13:48 (csgs192.cs.appstate.edu)
+colbertbg pts/17       2013-01-24 12:52 (71-12-216-41.dhcp.spbg.sc.charter.com)
+triggsg  pts/18       2013-01-24 13:53 (ip-152010159147.cs.appstate.edu)
+st79375  pts/23       2013-01-23 19:22 (csgrad-156.cs.appstate.edu)
+
+(student)~% who | sed 's/ .*//' | sort | uniq | wc -l
+14
+
+===================================================================================
+Problem 2: Username Filter
+===================================================================================
+Code with digits: cat /etc/passwd | sed 's/:.*//' | egrep -o '^.*[0-9]+' | wc -l
+Code without digits: cat /etc/passwd | sed 's/:.*//' | egrep -v '^.*[0-9]+' | wc -l
+
+Tests:
+(student)~% cat /etc/passwd | sed 's/:.*//' | egrep -o '^.*[0-9]+' | wc -l
+248
+(student)~% cat /etc/passwd | sed 's/:.*//' | egrep -v '^.*[0-9]+' | wc -l
+1038
+
+===================================================================================
+Problem 3: Digits in date command
+===================================================================================
+Code: date | grep -o '[0-9]' | wc-l
+
+Test:
+(student)~% date | grep -o '[0-9]' | wc -l
+12
+
+===================================================================================
+Problem 4: Letter shift (except m)
+===================================================================================
+Code: tr '[a-l][n-z]' '[A-L][N-Z]'
+
+Test: 
+(student)~% tr '[a-l][n-z]' '[A-L][N-Z]'
+abcdefghijklmnopqrstuvwxyz
+ABCDEFGHIJKLmNOPQRSTUVWXYZ
+
+===================================================================================
+Problem 5: Letter interchange
+===================================================================================
+Code: sed 's/\(^.\{3\}\)\(.*\)\(...\)$/\3\2\1/'
+Test:
+(student)~% sed 's/\(^.\{3\}\)\(.*\)\(...\)$/\3\2\1/'
+aaabccc
+cccbaaa
+abcdefg
+efgdabc
+
+===================================================================================
+Problem 6: CSV Header
+===================================================================================
+Code: awk -F\, '{print "\nFirst = "$1, "\nSecond = "$2, "\nThird = "$3}'
+Test:
+
+(student)~% awk -F\, '{print "\nFirst = "$1, "\nSecond = "$2, "\nThird = "$3}'
+1,2,3
+
+First = 1
+Second = 2
+Third = 3
+
+===================================================================================
+Problem 7: Addition
+===================================================================================
+Code: awk '{One = One + $1; Two = Two + $2;}\
+      END{print "--------\n"; print One "   " Two;}' awk-ex
+
+(student)~% cat awk-ex
+1 2
+1 2
+
+
+Test: (student)~% awk '{One = One + $1; Two = Two + $2;}\
+      END{print "--------\n"; print One "     " Two;}' awk-ex
+--------
+
+2     4
+
+===================================================================================
+Problem 8: Grad Problem
+===================================================================================
+Code: sed 's/\(^a\+\).*[^b]\(b\+\)$/\2X\1/'
+
+Test:
+(student)~% sed 's/\(^a\+\).*[^b]\(b\+\)$/\2X\1/'
+aaaddbddbbb
+bbbXaaa
+aaaaaa4556ASSDbbbBBBBbbbereerebbbb
+bbbbXaaaaaa
+

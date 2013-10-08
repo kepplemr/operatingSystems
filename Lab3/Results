@@ -1,0 +1,22 @@
+# Results file for Magic8 driver testing
+# Author: Michael Kepple
+# Date:   24 Apr 2013
+
+Testing Sequential/Original Case:
+0 No
+1 Yes
+2 Maybe
+3 Not a chance in hell
+4 Ab-so-lutely
+Testing Random/Uppercase:
+1 YES
+2 YES
+4 AB-SO-LUTELY
+2 MAYBE
+0 NO
+Testing Random/Lowercare/Stoked:
+3 no a chance in hell!!!
+4 ab-so-lutely!!!
+0 no!!!
+4 ab-so-lutely!!!
+1 yes!!!

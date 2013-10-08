@@ -1,0 +1,852 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 38 24 574 768
+%%Title: Enscript Output
+%%For: Kepple  Michael R.
+%%Creator: GNU enscript 1.6.4
+%%CreationDate: Thu Apr 18 14:54:58 2013
+%%Orientation: Portrait
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 4
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 4
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 10 10 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6 4
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      fname length fmodstr length add pagenumstr length add 95 6 idiv add d_header_w 6 idiv le{
+        5 0 moveto fname show
+        45 0 rmoveto fmodstr show
+        45 0 rmoveto pagenumstr show
+      } {
+        5 0 moveto fmodstr show
+        45 0 rmoveto pagenumstr show
+        fname length d_header_w 6 idiv idiv 1 add 10 mul 5 exch moveto
+        1 1 fname length d_header_w 6 idiv idiv
+        {
+          dup fname exch 1 sub d_header_w 6 idiv mul d_header_w 6 idiv getinterval show
+          5 exch 10 mul fname length d_header_w 6 idiv idiv 1 add 10 mul exch sub moveto
+        } for
+        5 10 moveto
+        fname fname length d_header_w 6 idiv idiv d_header_w 6 idiv mul dup fname length exch sub getinterval show
+      }ifelse
+    }ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 536 def
+/d_page_h 744 def
+/d_header_x 0 def
+/d_header_y 700 def
+/d_header_w 536 def
+/d_header_h 44 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 536 def
+/d_footer_h 0 def
+/d_output_w 536 def
+/d_output_h 700 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 1 def
+/fname (Results) def
+/fdir () def
+/ftail (Results) def
+% User defined strings:
+/fmodstr (Thu Apr 18 14:54:14 2013) def
+/pagenumstr (1) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+29 687 M
+(Michael Kepple) s
+29 676 M
+(Operating Systems) s
+29 654 M
+(Lab Ten) s
+29 632 M
+(1\) Add hook ) s
+/Courier-Bold 10 10 SUF
+101 632 M
+(for) s
+/F-gs-font 10 10 SF
+119 632 M
+( msg_dmp\(\) in /usr/src/servers/is/dmp.c) s
+29 621 M
+(Diff output:) s
+29 610 M
+(26d25) s
+29 599 M
+(<        { F9,    msg_dmp, \342\\200\\234Message Matrix printout\342\\200\\235 },) s
+29 577 M
+(2\) Add msg_dmp\(\) function declaration in proto.h) s
+29 566 M
+(Diff output:) s
+29 555 M
+(13d12) s
+29 544 M
+(<  ) s
+/Courier-Bold 10 10 SUF
+47 544 M
+(void) s
+/F-gs-font 10 10 SF
+71 544 M
+( msg_dmp\() s
+/Courier-Bold 10 10 SUF
+125 544 M
+(void) s
+/F-gs-font 10 10 SF
+149 544 M
+(\);) s
+29 522 M
+(3\) GET_MSGS defined in /usr/src/include/minix/) s
+29 511 M
+(Diff output:) s
+29 500 M
+(475d474) s
+29 489 M
+(< #    define GET_MSGS      25    ) s
+/Courier-Oblique 10 10 SUF
+233 489 M
+(/* get system message matrix */) s
+/F-gs-font 10 10 SF
+29 467 M
+(4\) MATRIX_SIZE, MAX_INDEX defined in /usr/src/kernel/) s
+/Courier-Bold 10 10 SUF
+347 467 M
+(const) s
+/F-gs-font 10 10 SF
+377 467 M
+(.h) s
+29 456 M
+(Diff output:) s
+29 445 M
+(11,14d10) s
+29 434 M
+(<) s
+29 423 M
+(< #define MATRIX_SIZE 10) s
+29 412 M
+(< #define MAX_INDEX 9) s
+29 401 M
+(<) s
+29 379 M
+(5\) msgMatrix defined in /usr/src/kernel/glo.h) s
+29 368 M
+(Diff output:) s
+29 357 M
+(27d26) s
+29 346 M
+(< EXTERN ) s
+/Courier-Bold 10 10 SUF
+83 346 M
+(int) s
+/F-gs-font 10 10 SF
+101 346 M
+( msgMatrix[10][10];) s
+29 324 M
+(6\) msgMatrix declared \(memset to 0\) in /usr/src/kernel/proc.c \(proc_init\(\)\)) s
+29 313 M
+(Diff output:) s
+29 302 M
+(119d118) s
+29 291 M
+(<          memset\(&msgMatrix, 0, ) s
+/Courier-Bold 10 10 SUF
+227 291 M
+(sizeof) s
+/F-gs-font 10 10 SF
+263 291 M
+(\(msgMatrix\)\);) s
+29 269 M
+(7\) edited /usr/src/kernel/system/do_getinfo.c to ) s
+/Courier-Bold 10 10 SUF
+323 269 M
+(return) s
+/F-gs-font 10 10 SF
+359 269 M
+( msgMatrix as message to cal) s
+29 258 M
+(ler.) s
+29 247 M
+(Diff output:) s
+29 236 M
+(53,57d52) s
+29 225 M
+(<        ) s
+/Courier-Bold 10 10 SUF
+83 225 M
+(case) s
+/F-gs-font 10 10 SF
+107 225 M
+( ) s
+/Courier-Bold 10 10 SUF
+113 225 M
+(GET_MSGS) s
+/F-gs-font 10 10 SF
+161 225 M
+(: {) s
+29 214 M
+(<          length = 100*) s
+/Courier-Bold 10 10 SUF
+173 214 M
+(sizeof) s
+/F-gs-font 10 10 SF
+209 214 M
+(\() s
+/Courier-Bold 10 10 SUF
+215 214 M
+(int) s
+/F-gs-font 10 10 SF
+233 214 M
+(\);) s
+29 203 M
+(<          src_vir = \(vir_bytes\) &msgMatrix;) s
+29 192 M
+(<          ) s
+/Courier-Bold 10 10 SUF
+95 192 M
+(break) s
+/F-gs-font 10 10 SF
+125 192 M
+(;) s
+29 181 M
+(<        }) s
+29 159 M
+(8\) msg_dmp\(\) function defined in /usr/src/servers/is/dmp_kernel.c) s
+29 148 M
+(Diff output:) s
+29 137 M
+(60,82d59) s
+29 126 M
+(< ) s
+/Courier-Bold 10 10 SUF
+41 126 M
+(void) s
+/F-gs-font 10 10 SF
+65 126 M
+( msg_dmp\(\)) s
+29 115 M
+(< {) s
+29 104 M
+(<   ) s
+/Courier-Bold 10 10 SUF
+53 104 M
+(int) s
+/F-gs-font 10 10 SF
+71 104 M
+( I, h, tempMatrix[MATRIX_SIZE][MATRIX_SIZE];) s
+29 93 M
+(<   sys_getmsginfo\(&tempMatrix\);) s
+29 82 M
+(<   ) s
+/Courier-Bold 10 10 SUF
+53 82 M
+(if) s
+/F-gs-font 10 10 SF
+65 82 M
+( \(\(I = sys_getproctab\(proc\)\) != OK\)) s
+29 71 M
+(<   {) s
+29 60 M
+(<     printf\(\342\\200\\234IS: Warning: couldn't get copy of process table %d\\n\342\\200\\235) s
+29 49 M
+(, i\); ) s
+29 38 M
+(<   }) s
+29 27 M
+(<   printf\(\342\\200\\234\\n Sent From                       Received @:\\n\342\\200\\235\);) s
+29 16 M
+(<   printf\(\342\\200\\234%14s%05d %05d %05d %05d %05d %05d %05d %05d %05d %05\\n\342\\200\\235) s
+29 5 M
+(, <\342\\200\\234\342\\200\\235,0,1,2,3,4,5,6,7,8,-2\);) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 2 def
+/fname (Results) def
+/fdir () def
+/ftail (Results) def
+% User defined strings:
+/fmodstr (Thu Apr 18 14:54:14 2013) def
+/pagenumstr (2) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+29 687 M
+(<   ) s
+/Courier-Bold 10 10 SUF
+53 687 M
+(for) s
+/F-gs-font 10 10 SF
+71 687 M
+( \(i=0; i<MAX_INDEX; i++\)) s
+29 676 M
+(<   {) s
+29 665 M
+(<     printf\(\342\\200\\234\\n%7s\(%d\) \342\\206\\222 \342\\200\\234, proc_name\(i\),i\);) s
+29 654 M
+(<     ) s
+/Courier-Bold 10 10 SUF
+65 654 M
+(for) s
+/F-gs-font 10 10 SF
+83 654 M
+( \(j=0; j<MATRIX_SIZE; j++\)) s
+29 643 M
+(<       printf\(\342\\200\\234%05d \342\\200\\234, tempMatrix[i][j]\);) s
+29 632 M
+(<   }) s
+29 621 M
+(<   printf\(\342\\200\\234\\n%6s\(-2\) \342\\206\\222 \342\\200\\234, proc_name\(SYSTEM\)\);) s
+29 610 M
+(<   ) s
+/Courier-Bold 10 10 SUF
+53 610 M
+(for) s
+/F-gs-font 10 10 SF
+71 610 M
+( \(i=0; i<MATRIX_SIZE; i++\)) s
+29 599 M
+(<     printf\(\342\\200\\234%05d \342\\200\\234, tempMatrix[MAX_INDENT][i]\);) s
+29 588 M
+(< }) s
+29 577 M
+(<) s
+29 566 M
+( ) s
+29 555 M
+(9\) system task calls to other endpoints tracked in /usr/src/kernel/system.c kernel_) s
+29 544 M
+(call_finish\(\).) s
+29 533 M
+(Diff output:) s
+29 522 M
+(70,73d69) s
+29 511 M
+(<            ) s
+/Courier-Bold 10 10 SUF
+107 511 M
+(int) s
+/F-gs-font 10 10 SF
+125 511 M
+( callBack = caller->p_endpoint;) s
+29 500 M
+(<            ) s
+/Courier-Bold 10 10 SUF
+107 500 M
+(if) s
+/F-gs-font 10 10 SF
+119 500 M
+( \(callBack >= 0 && callBack <= MAX_INDEX\)) s
+29 489 M
+(<              msgMatrix[MAX_INDEX][caller->p_endpoint]++;) s
+29 478 M
+(<) s
+29 456 M
+(10\) system task call from other endpoints tracked in /usr/src/kernel/system.c kerne) s
+29 445 M
+(l_call\(\)) s
+29 434 M
+(Diff output:) s
+29 423 M
+(148,150d143) s
+29 412 M
+(<            ) s
+/Courier-Bold 10 10 SUF
+107 412 M
+(int) s
+/F-gs-font 10 10 SF
+125 412 M
+( callee = caller->p_endpoint;) s
+29 401 M
+(<            ) s
+/Courier-Bold 10 10 SUF
+107 401 M
+(if) s
+/F-gs-font 10 10 SF
+119 401 M
+( \(callee >= 0 && callee < MATRIX_SIZE\)) s
+29 390 M
+(<              msgMatrix[callee][MAX_INDEX]++;) s
+29 368 M
+(11\) all other endpoint messages tracked in /usr/src/kernel/proc.h) s
+29 357 M
+(Diff output:) s
+29 346 M
+(504,510d503) s
+29 335 M
+(<        ) s
+/Courier-Bold 10 10 SUF
+83 335 M
+(if) s
+/F-gs-font 10 10 SF
+95 335 M
+( \(result == OK\)) s
+29 324 M
+(<        {) s
+29 313 M
+(<          ) s
+/Courier-Bold 10 10 SUF
+95 313 M
+(int) s
+/F-gs-font 10 10 SF
+113 313 M
+( caller = proc_nr\(caller_ptr\);) s
+29 302 M
+(<          ) s
+/Courier-Bold 10 10 SUF
+95 302 M
+(int) s
+/F-gs-font 10 10 SF
+113 302 M
+( callee = src_dst_e;) s
+29 291 M
+(<          ) s
+/Courier-Bold 10 10 SUF
+95 291 M
+(if) s
+/F-gs-font 10 10 SF
+107 291 M
+( \(\(caller >= 0 && callee >=0\) && \(callee < MAX_INDEX && caller < MAX_I) s
+29 280 M
+(NDEX\)\)) s
+29 269 M
+(<          msgMatrix[caller][callee]++;) s
+29 258 M
+(<        }) s
+29 236 M
+(12\) make, make install in all local directories, make install in /usr/src/releaseto) s
+29 225 M
+(ols.) s
+29 203 M
+(13\) 'shutdown -r' to reboot the machine.) s
+29 181 M
+(* according to /usr/src/include/minix/com.h, endpoint 7 = Minix root filesystem) s
+_R
+S
+%%Trailer
+%%Pages: 2
+%%DocumentNeededResources: font Courier-Oblique Courier-Bold Courier 
+%%EOF

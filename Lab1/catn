@@ -1,0 +1,43 @@
+#!/bin/bash
+#
+# Author: Michael Kepple
+# Date: 24 Jan 2013
+#
+# This script simulates the 'cat -n' command with an input file specified on the
+# command line. Basically adds line numbers and formats the output appropriately.
+#
+if test -z "$1"; then
+    echo Error:filename parameter expected.
+    exit
+else
+    count=0 
+    while read line; do
+        ((count++)) 
+        printf "%6d  %s\n" "$count" "$line" 
+    done < $1
+fi
+
+:'
+===============================================================================
+Test
+===============================================================================
+(student)~/5520/Lab1% catn catn
+     1  #!/bin/bash
+     2  #
+     3  # Author: Michael Kepple
+     4  # Date: 24 Jan 2013
+     5  #
+     6  # This script simulates the 'cat -n' command with an input file specified on the
+     7  # command line. Basically adds line numbers and formats the output appropriately.
+     8  #
+     9  if test -z "$1"; then
+    10  echo Error:filename parameter expected.
+    11  exit
+    12  else
+    13  count=0
+    14  while read line; do
+    15  ((count++))
+    16  printf "%6d  %sn" "$count" "$line"
+    17  done < $1
+    18  fi
+

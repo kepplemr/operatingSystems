@@ -1,0 +1,136 @@
+#!/bin/bash
+#
+# Author: Michael Kepple
+# Date: 24 Jan 2013
+#
+# This script uses the "long" option to display lines to stdout. These lines are
+# sorted: first by the day of month last modified, secondly by file length in 
+# bytes, and finally by the number of links.
+#
+echo ==== Standard Long LS Output ====
+ls -l | head -1
+ls -l | tail -n +2
+echo ==== Sorted by Day of Month Last Modified ====
+ls -l | head -1
+ls -l | tail -n +2 | sort -k 7n,7
+echo ==== Sorted by File Length in Bytes ====
+ls -l | head -1
+ls -l | tail -n +2 | sort -nrk 5,5
+echo ==== Sorted by Number of Links ====
+ls -l | head -1
+ls -l | tail -n +2 | sort -k 2n,2
+
+:'
+===============================================================================
+Test
+===============================================================================
+(student)~/5520/Lab1% lssort
+==== Standard Long LS Output ====
+total 172
+-rwxrwxr-x 1 kepplemr csf  1158 Jan 31 14:03 catn
+-rw-rw-r-- 1 kepplemr csf   427 Jan 27 18:07 catn~
+-rw-rw-r-- 1 kepplemr csf  3403 Jan 31 14:04 catn.pdf
+-rw-rw-r-- 1 kepplemr csf 14502 Jan 31 14:04 catn.ps
+-rwxrwxr-x 1 kepplemr csf   449 Jan 27 16:27 chgext
+-rw-rw-r-- 1 kepplemr csf  3129 Jan 27 17:07 chgext.pdf
+-rw-rw-r-- 1 kepplemr csf 13452 Jan 27 17:05 chgext.ps
+-rw-rw-r-- 1 kepplemr csf    11 Jan 31 10:24 fileo
+-rw-rw-r-- 1 kepplemr csf    10 Jan 31 10:24 foo
+-rw-rw-r-- 1 kepplemr csf   162 Jan 31 12:11 indent
+-rwxrwxr-x 1 kepplemr csf   632 Jan 27 15:45 lssort
+-rw-rw-r-- 1 kepplemr csf  3164 Jan 27 17:07 lssort.pdf
+-rw-rw-r-- 1 kepplemr csf 13683 Jan 27 17:06 lssort.ps
+-rwxrwxr-x 1 kepplemr csf   427 Jan 27 18:07 mon
+-rw-rw-r-- 1 kepplemr csf  3151 Jan 27 18:08 mon.pdf
+-rw-rw-r-- 1 kepplemr csf 13486 Jan 27 18:07 mon.ps
+-rwxrwxr-x 1 kepplemr csf   539 Jan 31 13:59 normwhite
+-rw-rw-r-- 1 kepplemr csf  3200 Jan 31 14:00 normwhite.pdf
+-rw-rw-r-- 1 kepplemr csf 13548 Jan 31 14:00 normwhite.ps
+-rw-rw-r-- 1 kepplemr csf    54 Jan 27 15:50 test.C
+-rw-rw-r-- 1 kepplemr csf    95 Jan 27 13:26 testFile
+-rw-rw-r-- 1 kepplemr csf   119 Jan 31 13:57 TestNormWhite
+-rwxrwxr-x 1 kepplemr csf   461 Jan 31 14:05 vhn
+-rw-rw-r-- 1 kepplemr csf  3213 Jan 31 14:05 vhn.pdf
+-rw-rw-r-- 1 kepplemr csf 13758 Jan 31 14:05 vhn.ps
+==== Sorted by Day of Month Last Modified ====
+total 172
+-rw-rw-r-- 1 kepplemr csf 13452 Jan 27 17:05 chgext.ps
+-rw-rw-r-- 1 kepplemr csf 13486 Jan 27 18:07 mon.ps
+-rw-rw-r-- 1 kepplemr csf 13683 Jan 27 17:06 lssort.ps
+-rw-rw-r-- 1 kepplemr csf  3129 Jan 27 17:07 chgext.pdf
+-rw-rw-r-- 1 kepplemr csf  3151 Jan 27 18:08 mon.pdf
+-rw-rw-r-- 1 kepplemr csf  3164 Jan 27 17:07 lssort.pdf
+-rw-rw-r-- 1 kepplemr csf   427 Jan 27 18:07 catn~
+-rw-rw-r-- 1 kepplemr csf    54 Jan 27 15:50 test.C
+-rw-rw-r-- 1 kepplemr csf    95 Jan 27 13:26 testFile
+-rwxrwxr-x 1 kepplemr csf   427 Jan 27 18:07 mon
+-rwxrwxr-x 1 kepplemr csf   449 Jan 27 16:27 chgext
+-rwxrwxr-x 1 kepplemr csf   632 Jan 27 15:45 lssort
+-rw-rw-r-- 1 kepplemr csf    10 Jan 31 10:24 foo
+-rw-rw-r-- 1 kepplemr csf   119 Jan 31 13:57 TestNormWhite
+-rw-rw-r-- 1 kepplemr csf    11 Jan 31 10:24 fileo
+-rw-rw-r-- 1 kepplemr csf 13548 Jan 31 14:00 normwhite.ps
+-rw-rw-r-- 1 kepplemr csf 13758 Jan 31 14:05 vhn.ps
+-rw-rw-r-- 1 kepplemr csf 14502 Jan 31 14:04 catn.ps
+-rw-rw-r-- 1 kepplemr csf   162 Jan 31 12:11 indent
+-rw-rw-r-- 1 kepplemr csf  3200 Jan 31 14:00 normwhite.pdf
+-rw-rw-r-- 1 kepplemr csf  3213 Jan 31 14:05 vhn.pdf
+-rw-rw-r-- 1 kepplemr csf  3403 Jan 31 14:04 catn.pdf
+-rwxrwxr-x 1 kepplemr csf  1158 Jan 31 14:03 catn
+-rwxrwxr-x 1 kepplemr csf   461 Jan 31 14:05 vhn
+-rwxrwxr-x 1 kepplemr csf   539 Jan 31 13:59 normwhite
+==== Sorted by File Length in Bytes ====
+total 172
+-rw-rw-r-- 1 kepplemr csf 14502 Jan 31 14:04 catn.ps
+-rw-rw-r-- 1 kepplemr csf 13758 Jan 31 14:05 vhn.ps
+-rw-rw-r-- 1 kepplemr csf 13683 Jan 27 17:06 lssort.ps
+-rw-rw-r-- 1 kepplemr csf 13548 Jan 31 14:00 normwhite.ps
+-rw-rw-r-- 1 kepplemr csf 13486 Jan 27 18:07 mon.ps
+-rw-rw-r-- 1 kepplemr csf 13452 Jan 27 17:05 chgext.ps
+-rw-rw-r-- 1 kepplemr csf  3403 Jan 31 14:04 catn.pdf
+-rw-rw-r-- 1 kepplemr csf  3213 Jan 31 14:05 vhn.pdf
+-rw-rw-r-- 1 kepplemr csf  3200 Jan 31 14:00 normwhite.pdf
+-rw-rw-r-- 1 kepplemr csf  3164 Jan 27 17:07 lssort.pdf
+-rw-rw-r-- 1 kepplemr csf  3151 Jan 27 18:08 mon.pdf
+-rw-rw-r-- 1 kepplemr csf  3129 Jan 27 17:07 chgext.pdf
+-rwxrwxr-x 1 kepplemr csf  1158 Jan 31 14:03 catn
+-rwxrwxr-x 1 kepplemr csf   632 Jan 27 15:45 lssort
+-rwxrwxr-x 1 kepplemr csf   539 Jan 31 13:59 normwhite
+-rwxrwxr-x 1 kepplemr csf   461 Jan 31 14:05 vhn
+-rwxrwxr-x 1 kepplemr csf   449 Jan 27 16:27 chgext
+-rwxrwxr-x 1 kepplemr csf   427 Jan 27 18:07 mon
+-rw-rw-r-- 1 kepplemr csf   427 Jan 27 18:07 catn~
+-rw-rw-r-- 1 kepplemr csf   162 Jan 31 12:11 indent
+-rw-rw-r-- 1 kepplemr csf   119 Jan 31 13:57 TestNormWhite
+-rw-rw-r-- 1 kepplemr csf    95 Jan 27 13:26 testFile
+-rw-rw-r-- 1 kepplemr csf    54 Jan 27 15:50 test.C
+-rw-rw-r-- 1 kepplemr csf    11 Jan 31 10:24 fileo
+-rw-rw-r-- 1 kepplemr csf    10 Jan 31 10:24 foo
+==== Sorted by Number of Links ====
+total 172
+-rw-rw-r-- 1 kepplemr csf    10 Jan 31 10:24 foo
+-rw-rw-r-- 1 kepplemr csf   119 Jan 31 13:57 TestNormWhite
+-rw-rw-r-- 1 kepplemr csf    11 Jan 31 10:24 fileo
+-rw-rw-r-- 1 kepplemr csf 13452 Jan 27 17:05 chgext.ps
+-rw-rw-r-- 1 kepplemr csf 13486 Jan 27 18:07 mon.ps
+-rw-rw-r-- 1 kepplemr csf 13548 Jan 31 14:00 normwhite.ps
+-rw-rw-r-- 1 kepplemr csf 13683 Jan 27 17:06 lssort.ps
+-rw-rw-r-- 1 kepplemr csf 13758 Jan 31 14:05 vhn.ps
+-rw-rw-r-- 1 kepplemr csf 14502 Jan 31 14:04 catn.ps
+-rw-rw-r-- 1 kepplemr csf   162 Jan 31 12:11 indent
+-rw-rw-r-- 1 kepplemr csf  3129 Jan 27 17:07 chgext.pdf
+-rw-rw-r-- 1 kepplemr csf  3151 Jan 27 18:08 mon.pdf
+-rw-rw-r-- 1 kepplemr csf  3164 Jan 27 17:07 lssort.pdf
+-rw-rw-r-- 1 kepplemr csf  3200 Jan 31 14:00 normwhite.pdf
+-rw-rw-r-- 1 kepplemr csf  3213 Jan 31 14:05 vhn.pdf
+-rw-rw-r-- 1 kepplemr csf  3403 Jan 31 14:04 catn.pdf
+-rw-rw-r-- 1 kepplemr csf   427 Jan 27 18:07 catn~
+-rw-rw-r-- 1 kepplemr csf    54 Jan 27 15:50 test.C
+-rw-rw-r-- 1 kepplemr csf    95 Jan 27 13:26 testFile
+-rwxrwxr-x 1 kepplemr csf  1158 Jan 31 14:03 catn
+-rwxrwxr-x 1 kepplemr csf   427 Jan 27 18:07 mon
+-rwxrwxr-x 1 kepplemr csf   449 Jan 27 16:27 chgext
+-rwxrwxr-x 1 kepplemr csf   461 Jan 31 14:05 vhn
+-rwxrwxr-x 1 kepplemr csf   539 Jan 31 13:59 normwhite
+-rwxrwxr-x 1 kepplemr csf   632 Jan 27 15:45 lssort
+

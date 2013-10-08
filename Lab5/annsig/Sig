@@ -1,0 +1,77 @@
+/*
+ * File:   annsig.c
+ * Author: Michael Kepple
+ * Date:   21 Feb 2013
+ *
+*/
+#include "sig.h"
+bool ringBack;
+
+int main()
+{
+    ringBack = false;
+    int pid = getpid();
+    struct sigaction action;
+    action.sa_handler = usr;
+    sigemptyset(&action.sa_mask);
+    if (sigaction(SIGUSR1, &action, NULL) < 0)
+    {
+        perror("sigaction");
+        exit(EXIT_FAILURE);
+    }
+    FILE *file;
+    file = fopen("temp.pid", "w+");
+    fprintf(file, "%d\n", pid);
+    fclose(file);
+    while (!ringBack) {}
+    printf("\nSIGUSR1 signal received!\n");
+}
+
+// SIGUSR Handler
+void usr()
+{
+    ringBack = true;
+}
+#
+# Makefile for annsig/sendsig
+# Author: Michael Kepple
+# Date:   21 Geb 2013
+#
+both: sendsig.c annsig.c sig.h
+	gcc annsig.c -o annsig
+	gcc sendsig.c -o sendsig
+/*
+ * File:   sendsig.c
+ * Author: Michael Kepple
+ * Date:   21 Feb 2013
+ *
+*/
+#include "sig.h"
+#define MAXPIDLEN 10
+
+int main()
+{
+    FILE *file;
+    file = fopen("temp.pid", "rt");
+    char str[MAXPIDLEN];
+    int pid = atoi(fgets(str, MAXPIDLEN, file));
+    kill(pid, SIGUSR1);
+    remove("temp.pid");
+}
+/* 
+ * File:   sig.h
+ * Author: Michael Kepple
+ * Date:   21 Feb 2013
+ *
+*/
+#ifndef ANNSIG_H
+#define ANNSIG_H
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+typedef int bool;
+#define true 1
+#define false 0
+void usr();
+#endif

@@ -1,0 +1,54 @@
+#
+# Makefile for timer
+# Author: Michael Kepple
+# Date:   21 Feb 2013
+#
+timer: timer.c timer.h
+/*
+ * File:   timer.c
+ * Author: Michael Kepple
+ * Date:   21 Feb 2013
+ * Note:   Input is assumed to be valid.
+ *
+*/
+#include "timer.h"
+bool ringBack;
+
+int main(int argc, char* argv[])
+{
+    ringBack = false;
+    struct sigaction action;
+    int delay = atoi(argv[1]);
+    alarm(delay);
+    action.sa_handler = timer;
+    sigemptyset(&action.sa_mask);
+    if (sigaction(SIGALRM, &action, NULL) < 0)
+    {
+        perror("sigaction");
+        exit(EXIT_FAILURE);
+    }
+    while (!ringBack) {}
+    printf("RING!\n");
+}
+
+void timer(int seconds)
+{
+    ringBack = true;
+}
+/*
+ * File:   timer.h
+ * Author: Michael Kepple
+ * Date:   21 Feb 2013
+ *
+*/
+#ifndef TIMER_H
+#define TIMER_H
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+typedef int bool;
+#define true 1
+#define false 0
+void timer(int seconds);
+#endif

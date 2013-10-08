@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# Author: Michael Kepple
+# Date: 24 Jan 2013
+#
+# This script filters input, removing excess spaces and tabs with a singular
+# tab in the output.
+#
+sed -e 's/ \+/ /g' -e 's/ *$//' -e 's/	\+/ /g'
+
+:'
+===============================================================================
+Test
+===============================================================================
+(student)~/5520/Lab1% normwhite
+This               is           a                test         of        spaces and      tabs.
+This is a test of spaces and tabs.
+

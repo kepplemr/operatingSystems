@@ -1,0 +1,1227 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 38 24 574 768
+%%Title: Enscript Output
+%%For: Kepple  Michael R.
+%%Creator: GNU enscript 1.6.4
+%%CreationDate: Thu Apr  4 14:16:15 2013
+%%Orientation: Portrait
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 4
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 4
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 10 10 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6 4
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      fname length fmodstr length add pagenumstr length add 95 6 idiv add d_header_w 6 idiv le{
+        5 0 moveto fname show
+        45 0 rmoveto fmodstr show
+        45 0 rmoveto pagenumstr show
+      } {
+        5 0 moveto fmodstr show
+        45 0 rmoveto pagenumstr show
+        fname length d_header_w 6 idiv idiv 1 add 10 mul 5 exch moveto
+        1 1 fname length d_header_w 6 idiv idiv
+        {
+          dup fname exch 1 sub d_header_w 6 idiv mul d_header_w 6 idiv getinterval show
+          5 exch 10 mul fname length d_header_w 6 idiv idiv 1 add 10 mul exch sub moveto
+        } for
+        5 10 moveto
+        fname fname length d_header_w 6 idiv idiv d_header_w 6 idiv mul dup fname length exch sub getinterval show
+      }ifelse
+    }ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 536 def
+/d_page_h 744 def
+/d_header_x 0 def
+/d_header_y 700 def
+/d_header_w 536 def
+/d_header_h 44 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 536 def
+/d_footer_h 0 def
+/d_output_w 536 def
+/d_output_h 700 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 1 def
+/fname (Dinphil) def
+/fdir () def
+/ftail (Dinphil) def
+% User defined strings:
+/fmodstr (Thu Apr 04 14:16:01 2013) def
+/pagenumstr (1) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+/Courier-Oblique 10 10 SUF
+29 687 M
+(/*) s
+29 676 M
+( * ) s
+29 665 M
+( * dinphil.c) s
+29 654 M
+( *) s
+29 643 M
+( * Author: Michael Kepple \(modifications from Tanenbaum code\)) s
+29 632 M
+( * Date:   02 Apr 2013) s
+29 621 M
+( * Description: Robust solution to dining philosopher problem as outlined in) s
+29 610 M
+( *   Fig 2-20 of Tanenbaum OS textbook.) s
+29 599 M
+( *) s
+29 588 M
+(*/) s
+/F-gs-font 10 10 SF
+29 577 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 577 M
+(include) s
+/F-gs-font 10 10 SF
+77 577 M
+( ) s
+/Courier-Bold 10 10 SUF
+83 577 M
+("dinphil.h") s
+/F-gs-font 10 10 SF
+/Courier-Bold 10 10 SUF
+29 566 M
+(int) s
+/F-gs-font 10 10 SF
+47 566 M
+( state[N];) s
+/Courier-Bold 10 10 SUF
+29 555 M
+(int) s
+/F-gs-font 10 10 SF
+47 555 M
+( idNum[N] = {0,1,2,3,4};) s
+29 544 M
+(sem_t mutex;) s
+29 533 M
+(sem_t philosophers[N];) s
+/Courier-Bold 10 10 SUF
+29 511 M
+(int) s
+/F-gs-font 10 10 SF
+47 511 M
+( ) s
+/Courier-Bold 10 10 SUF
+53 511 M
+(main) s
+/F-gs-font 10 10 SF
+77 511 M
+(\(\)) s
+29 500 M
+({) s
+29 489 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 489 M
+(int) s
+/F-gs-font 10 10 SF
+71 489 M
+( iter;) s
+29 478 M
+(    pthread_t threads[N];) s
+29 467 M
+(    sem_init\(&mutex,0,1\);) s
+29 456 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 456 M
+(for) s
+/F-gs-font 10 10 SF
+71 456 M
+( \(iter=0; iter<N; iter++\)) s
+29 445 M
+(        sem_init\(&philosophers[iter],0,0\);) s
+29 434 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 434 M
+(for) s
+/F-gs-font 10 10 SF
+71 434 M
+( \(iter=0; iter<N; iter++\)) s
+29 423 M
+(        pthread_create\(&threads[iter], NULL, philosopher, &idNum[iter]\);) s
+29 412 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 412 M
+(for) s
+/F-gs-font 10 10 SF
+71 412 M
+( \(iter=0; iter<N; iter++\)) s
+29 401 M
+(        pthread_join\(threads[iter],NULL\);) s
+29 390 M
+(}) s
+/Courier-Oblique 10 10 SUF
+29 368 M
+(/*) s
+29 357 M
+( * Function: philosopher) s
+29 346 M
+( * Description: main runnable thread for each philosopher. Will attempt to take) s
+29 335 M
+( *   forks, eat for five seconds, then put the forks down and wait it's turn to) s
+29 324 M
+( *   eat once more.) s
+29 313 M
+( * Params: philosopher ID number) s
+29 302 M
+( * Returns: Nothing \(should never return\).) s
+29 291 M
+( * Modifies: Nothing.) s
+29 280 M
+(*/) s
+/F-gs-font 10 10 SF
+/Courier-Bold 10 10 SUF
+29 269 M
+(void) s
+/F-gs-font 10 10 SF
+53 269 M
+( *) s
+/Courier-Bold 10 10 SUF
+65 269 M
+(philosopher) s
+/F-gs-font 10 10 SF
+131 269 M
+(\() s
+/Courier-Bold 10 10 SUF
+137 269 M
+(void) s
+/F-gs-font 10 10 SF
+161 269 M
+( *num\)) s
+29 258 M
+({) s
+29 247 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 247 M
+(int) s
+/F-gs-font 10 10 SF
+71 247 M
+( *philosopher = num;) s
+29 236 M
+(    printf\() s
+/Courier-Bold 10 10 SUF
+95 236 M
+("Philosopher %d has joined the table\\n") s
+/F-gs-font 10 10 SF
+329 236 M
+(, *philosopher\);) s
+29 225 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 225 M
+(for) s
+/F-gs-font 10 10 SF
+71 225 M
+( \(;;\)) s
+29 214 M
+(    {) s
+29 203 M
+(        take_forks\(*philosopher\);) s
+29 192 M
+(        sleep\(5\);) s
+29 181 M
+(        put_forks\(*philosopher\);) s
+29 170 M
+(    }) s
+29 159 M
+(}) s
+/Courier-Oblique 10 10 SUF
+29 137 M
+(/*) s
+29 126 M
+( * Function: take_forks) s
+29 115 M
+( * Description: philosophers will attempt to take both forks from their left and) s
+29 104 M
+( *   right. If they fail, they will block until another philosopher wakes them up) s
+29 93 M
+( *   by testing if they're now ready to eat.) s
+29 82 M
+( * Params: philosopher ID number) s
+29 71 M
+( * Returns: Nothing.) s
+29 60 M
+( * Modifies: Mutex, specific philosopher semaphore, philosopher state.) s
+29 49 M
+(*/) s
+/F-gs-font 10 10 SF
+/Courier-Bold 10 10 SUF
+29 38 M
+(void) s
+/F-gs-font 10 10 SF
+53 38 M
+( ) s
+/Courier-Bold 10 10 SUF
+59 38 M
+(take_forks) s
+/F-gs-font 10 10 SF
+119 38 M
+(\() s
+/Courier-Bold 10 10 SUF
+125 38 M
+(int) s
+/F-gs-font 10 10 SF
+143 38 M
+( philosopher\)) s
+29 27 M
+({) s
+29 16 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+53 16 M
+(// Enter critical section - lock other philosophers out) s
+/F-gs-font 10 10 SF
+29 5 M
+(    sem_wait\(&mutex\);) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 2 def
+/fname (Dinphil) def
+/fdir () def
+/ftail (Dinphil) def
+% User defined strings:
+/fmodstr (Thu Apr 04 14:16:01 2013) def
+/pagenumstr (2) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+29 687 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+53 687 M
+(// Regardless of availability, this philosopher is now hungry) s
+/F-gs-font 10 10 SF
+29 676 M
+(    state[philosopher] = HUNGRY;) s
+29 665 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+53 665 M
+(// Check if forks are available) s
+/F-gs-font 10 10 SF
+29 654 M
+(    test_forks\(philosopher\);) s
+29 643 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+53 643 M
+(// Exit critical section) s
+/F-gs-font 10 10 SF
+29 632 M
+(    sem_post\(&mutex\);) s
+29 621 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+53 621 M
+(// Wait here until forks available \(if test_forks indicated so\).) s
+/F-gs-font 10 10 SF
+29 610 M
+(    sem_wait\(&philosophers[philosopher]\);) s
+29 599 M
+(}) s
+/Courier-Oblique 10 10 SUF
+29 577 M
+(/* ) s
+29 566 M
+( * Function: put_forks) s
+29 555 M
+( * Description: after getting their fill of spaghetti, indicated philosopher will) s
+29 544 M
+( *   put his forks back on the table and test to see whether any of his neighbors) s
+29 533 M
+( *   are now free to eat.) s
+29 522 M
+( * Params: philosopher ID number) s
+29 511 M
+( * Return: Nothing.) s
+29 500 M
+( * Modifies: mutex, philosopher state.) s
+29 489 M
+(*/) s
+/F-gs-font 10 10 SF
+/Courier-Bold 10 10 SUF
+29 478 M
+(void) s
+/F-gs-font 10 10 SF
+53 478 M
+( ) s
+/Courier-Bold 10 10 SUF
+59 478 M
+(put_forks) s
+/F-gs-font 10 10 SF
+113 478 M
+(\() s
+/Courier-Bold 10 10 SUF
+119 478 M
+(int) s
+/F-gs-font 10 10 SF
+137 478 M
+( philosopher\)) s
+29 467 M
+({) s
+29 456 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+53 456 M
+(// Enter critical section) s
+/F-gs-font 10 10 SF
+29 445 M
+(    sem_wait\(&mutex\);) s
+29 434 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+53 434 M
+(// Philosopher has finished eating) s
+/F-gs-font 10 10 SF
+29 423 M
+(    state[philosopher] = THINKING;) s
+29 412 M
+(    printf\() s
+/Courier-Bold 10 10 SUF
+95 412 M
+("Philosopher %d is now thinking\\n") s
+/F-gs-font 10 10 SF
+299 412 M
+(, philosopher\);) s
+29 401 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+53 401 M
+(// See if left neighbor can now eat \(now that I'm no longer using fork\).) s
+/F-gs-font 10 10 SF
+29 390 M
+(    test_forks\(LEFT\);) s
+29 379 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+53 379 M
+(// See if right neighbor can now eat) s
+/F-gs-font 10 10 SF
+29 368 M
+(    test_forks\(RIGHT\);) s
+29 357 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+53 357 M
+(// Exit critical region) s
+/F-gs-font 10 10 SF
+29 346 M
+(    sem_post\(&mutex\);) s
+29 335 M
+(}) s
+/Courier-Oblique 10 10 SUF
+29 313 M
+(/*) s
+29 302 M
+( * Function: test_forks) s
+29 291 M
+( * Description: tests to see whether indicated philosopher has the requisite) s
+29 280 M
+( *   fork availability to commence eating \(i.e. both his neighbors aren't\).) s
+29 269 M
+( * Params: philosopher ID number) s
+29 258 M
+( * Returns: Nothing.) s
+29 247 M
+( * Modifies: philosopher state, specific philosopher semaphore.) s
+29 236 M
+(*/) s
+/F-gs-font 10 10 SF
+/Courier-Bold 10 10 SUF
+29 225 M
+(void) s
+/F-gs-font 10 10 SF
+53 225 M
+( ) s
+/Courier-Bold 10 10 SUF
+59 225 M
+(test_forks) s
+/F-gs-font 10 10 SF
+119 225 M
+(\() s
+/Courier-Bold 10 10 SUF
+125 225 M
+(int) s
+/F-gs-font 10 10 SF
+143 225 M
+( philosopher\)) s
+29 214 M
+({) s
+29 203 M
+(    ) s
+/Courier-Bold 10 10 SUF
+53 203 M
+(if) s
+/F-gs-font 10 10 SF
+65 203 M
+( \(state[philosopher] == HUNGRY && state[LEFT] != EATING && ) s
+29 192 M
+(            state[RIGHT] != EATING\)) s
+29 181 M
+(    {) s
+29 170 M
+(        printf\() s
+/Courier-Bold 10 10 SUF
+119 170 M
+("Philosopher %d is now eating\\n") s
+/F-gs-font 10 10 SF
+311 170 M
+(, philosopher\);) s
+29 159 M
+(        state[philosopher] = EATING;) s
+29 148 M
+(        sem_post\(&philosophers[philosopher]\);) s
+29 137 M
+(    }) s
+29 126 M
+(}) s
+/Courier-Oblique 10 10 SUF
+29 115 M
+(/* ) s
+29 104 M
+( * File:   dinphil.h) s
+29 93 M
+( * Author: Michael Kepple) s
+29 82 M
+( * Date:   02 Apr 2013) s
+29 71 M
+( *) s
+29 60 M
+(*/) s
+/F-gs-font 10 10 SF
+29 49 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 49 M
+(ifndef) s
+/F-gs-font 10 10 SF
+71 49 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 49 M
+(DINPHIL_H) s
+/F-gs-font 10 10 SF
+29 38 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 38 M
+(define) s
+/F-gs-font 10 10 SF
+71 38 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 38 M
+(DINPHIL_H) s
+/F-gs-font 10 10 SF
+29 27 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 27 M
+(include<stdio.h>) s
+/F-gs-font 10 10 SF
+29 16 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 16 M
+(include<semaphore.h>) s
+/F-gs-font 10 10 SF
+29 5 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 5 M
+(include<pthread.h>) s
+/F-gs-font 10 10 SF
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+38 24 translate
+/pagenum 3 def
+/fname (Dinphil) def
+/fdir () def
+/ftail (Dinphil) def
+% User defined strings:
+/fmodstr (Thu Apr 04 14:16:01 2013) def
+/pagenumstr (3) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+29 687 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 687 M
+(define) s
+/F-gs-font 10 10 SF
+71 687 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 687 M
+(N) s
+/F-gs-font 10 10 SF
+83 687 M
+( 5) s
+29 676 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 676 M
+(define) s
+/F-gs-font 10 10 SF
+71 676 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 676 M
+(LEFT) s
+/F-gs-font 10 10 SF
+101 676 M
+( \(philosopher+N-1\)%N) s
+29 665 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 665 M
+(define) s
+/F-gs-font 10 10 SF
+71 665 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 665 M
+(RIGHT) s
+/F-gs-font 10 10 SF
+107 665 M
+( \(philosopher+1\)%N) s
+29 654 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 654 M
+(define) s
+/F-gs-font 10 10 SF
+71 654 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 654 M
+(THINKING) s
+/F-gs-font 10 10 SF
+125 654 M
+( 0) s
+29 643 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 643 M
+(define) s
+/F-gs-font 10 10 SF
+71 643 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 643 M
+(HUNGRY) s
+/F-gs-font 10 10 SF
+113 643 M
+( 1) s
+29 632 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 632 M
+(define) s
+/F-gs-font 10 10 SF
+71 632 M
+( ) s
+/Courier-Bold 10 10 SUF
+77 632 M
+(EATING) s
+/F-gs-font 10 10 SF
+113 632 M
+( 2) s
+/Courier-Bold 10 10 SUF
+29 621 M
+(void) s
+/F-gs-font 10 10 SF
+53 621 M
+( * ) s
+/Courier-Bold 10 10 SUF
+71 621 M
+(philosopher) s
+/F-gs-font 10 10 SF
+137 621 M
+(\() s
+/Courier-Bold 10 10 SUF
+143 621 M
+(void) s
+/F-gs-font 10 10 SF
+167 621 M
+( *\);) s
+/Courier-Bold 10 10 SUF
+29 610 M
+(void) s
+/F-gs-font 10 10 SF
+53 610 M
+( ) s
+/Courier-Bold 10 10 SUF
+59 610 M
+(take_forks) s
+/F-gs-font 10 10 SF
+119 610 M
+(\() s
+/Courier-Bold 10 10 SUF
+125 610 M
+(int) s
+/F-gs-font 10 10 SF
+143 610 M
+(\);) s
+/Courier-Bold 10 10 SUF
+29 599 M
+(void) s
+/F-gs-font 10 10 SF
+53 599 M
+( ) s
+/Courier-Bold 10 10 SUF
+59 599 M
+(put_forks) s
+/F-gs-font 10 10 SF
+113 599 M
+(\() s
+/Courier-Bold 10 10 SUF
+119 599 M
+(int) s
+/F-gs-font 10 10 SF
+137 599 M
+(\);) s
+/Courier-Bold 10 10 SUF
+29 588 M
+(void) s
+/F-gs-font 10 10 SF
+53 588 M
+( ) s
+/Courier-Bold 10 10 SUF
+59 588 M
+(test_forks) s
+/F-gs-font 10 10 SF
+119 588 M
+(\() s
+/Courier-Bold 10 10 SUF
+125 588 M
+(int) s
+/F-gs-font 10 10 SF
+143 588 M
+(\);) s
+29 577 M
+(#) s
+/Courier-Bold 10 10 SUF
+35 577 M
+(endif) s
+/F-gs-font 10 10 SF
+29 566 M
+(#) s
+29 555 M
+(# ) s
+/Courier-Bold 10 10 SUF
+41 555 M
+(Makefile) s
+/F-gs-font 10 10 SF
+89 555 M
+( ) s
+/Courier-Bold 10 10 SUF
+95 555 M
+(for) s
+/F-gs-font 10 10 SF
+113 555 M
+( ) s
+/Courier-Bold 10 10 SUF
+119 555 M
+(dinphil) s
+/F-gs-font 10 10 SF
+29 544 M
+(# ) s
+/Courier-Bold 10 10 SUF
+41 544 M
+(Author:) s
+/F-gs-font 10 10 SF
+83 544 M
+( ) s
+/Courier-Bold 10 10 SUF
+89 544 M
+(Michael) s
+/F-gs-font 10 10 SF
+131 544 M
+( ) s
+/Courier-Bold 10 10 SUF
+137 544 M
+(Kepple) s
+/F-gs-font 10 10 SF
+29 533 M
+(# ) s
+/Courier-Bold 10 10 SUF
+41 533 M
+(Date:) s
+/F-gs-font 10 10 SF
+71 533 M
+(   02 ) s
+/Courier-Bold 10 10 SUF
+107 533 M
+(Apr) s
+/F-gs-font 10 10 SF
+125 533 M
+( 2013) s
+29 522 M
+(#) s
+/Courier-Bold 10 10 SUF
+29 511 M
+(all) s
+/F-gs-font 10 10 SF
+47 511 M
+(: dinphil.c dinphil.h) s
+29 500 M
+(        gcc dinphil.c dinphil.h -lpthread -o dinphil) s
+/Courier-Bold 10 10 SUF
+29 478 M
+(clean) s
+/F-gs-font 10 10 SF
+59 478 M
+(:) s
+29 467 M
+(        rm -rf *.o dinphil) s
+_R
+S
+%%Trailer
+%%Pages: 3
+%%DocumentNeededResources: font Courier-Oblique Courier-Bold Courier 
+%%EOF

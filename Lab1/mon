@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Author: Michael Kepple
+# Date: 24 Jan 2013
+#
+# This script clears the screen, displays the current date & time, a blank line,
+# followed by a periodic check of users currently online. How often to run this
+# check can be specified to the script as a command line argument, in seconds.
+#
+if test -z "$1"
+then
+    timer=20
+else
+    timer=$1
+fi
+clear
+date
+echo -e "\n"
+while true; do
+    sleep $timer
+    who
+done

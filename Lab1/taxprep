@@ -1,0 +1,77 @@
+#!/bin/bash
+#
+# Author: Michael Kepple
+# Date: 24 Jan 2013
+#
+# This script helps users sort their tax deduction information.
+#
+printf "Welcome to Michaels TaxPrep Software\n"
+printf "Enter Output File: "
+read file
+while true
+do
+    printf "Transaction type: "
+    read type
+    printf "Date (YYYYMMDD): "
+    read date
+    printf "Payee: "
+    read payee
+    printf "Description: "
+    read desc
+    printf "Category: "
+    read category
+    printf "Amount: "
+    read amount
+    echo $type $date $payee $desc $category $amount >> $file
+    sort -k 5,5 -k 2,2 -k 3,3 $file -o $file
+done
+
+:'
+=====================================================================
+Test
+=====================================================================
+Prompt:
+
+Welcome to Michaels TaxPrep Software
+Enter Output File: foo
+Transaction type: Visa 
+Date (YYYYMMDD): 20130102
+Payee: NeverSummer
+Description: Board
+Category: Snowboard
+Amount: 400   
+Transaction type: Visa
+Date (YYYYMMDD): 20130101
+Payee: NeverSummer
+Description: Bindings
+Category: Snowboard
+Amount: 150
+Transaction type: Visa
+Date (YYYYMMDD): 20130420
+Payee: Microsoft
+Description: Upgrade
+Category: Computer
+Amount: 200
+Transaction type: Visa
+Date (YYYYMMDD): 20130420
+Payee: Apple
+Description: Crap
+Category: Computer
+Amount: 1000
+Transaction type: Visa
+Date (YYYYMMDD): 20130420
+Payee: Oracle
+Description: Stuff
+Category: Computer
+Amount: 300
+Transaction type: ^C
+
+Output file foo:
+
+Visa 20130420 Apple Crap Computer 1000
+Visa 20130420 Microsoft Upgrade Computer 200
+Visa 20130420 Oracle Stuff Computer 300
+Visa 20130101 NeverSummer Bindings Snowboard 150
+Visa 20130102 NeverSummer Board Snowboard 400
+
+'
